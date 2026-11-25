@@ -1,15 +1,18 @@
 ---
-name: Vienna Transit Departures
 strategy: polling
-refresh_interval: 5
-polling_verb: GET
-polling_url: |-
-  {% assign wl_list = wiener_linien_stops | split: "," %}{% assign wl_qs = "" %}{% for raw in wl_list %}{% assign sid = raw | strip %}{% if sid != "" %}{% if wl_qs != "" %}{% assign wl_qs = wl_qs | append: "&" %}{% endif %}{% if sid.size >= 7 %}{% assign wl_qs = wl_qs | append: "diva=" | append: sid %}{% else %}{% assign wl_qs = wl_qs | append: "stopId=" | append: sid %}{% endif %}{% endif %}{% endfor %}{% if wl_qs != "" %}https://www.wienerlinien.at/ogd_realtime/monitor?{{ wl_qs }}
-  {% endif %}{% assign sb_list = sbahn_stops | split: "," %}{% for raw in sb_list %}{% assign eid = raw | strip %}{% if eid != "" %}https://fahrplan.oebb.at/bin/stboard.exe/dn?L=vs_scotty.vs_liveticker&tickerID=dep&start=yes&eqstops=no&evaId={{ eid }}&productsFilter=0000010000&showJourneys=30&boardType=dep&outputMode=tickerDataOnly
-  {% endif %}{% endfor %}
-polling_headers: "Accept: application/json, text/plain"
 no_screen_padding: 'no'
 dark_mode: 'no'
+static_data: ''
+polling_verb: get
+framework_version: 3.4.7
+serverless_language: node
+refresh_interval_floor: ''
+polling_url: "{% assign wl_list = wiener_linien_stops | split: \",\" %}{% assign wl_qs = \"\" %}{% for raw in wl_list %}{% assign sid = raw | strip %}{% if sid != \"\" %}{% if wl_qs != \"\" %}{% assign wl_qs = wl_qs | append: \"&\" %}{% endif %}{% if sid.size >= 7 %}{% assign wl_qs = wl_qs | append: \"diva=\" | append: sid %}{% else %}{% assign wl_qs = wl_qs | append: \"stopId=\" | append: sid %}{% endif %}{% endif %}{% endfor %}{% if wl_qs != \"\" %}https://www.wienerlinien.at/ogd_realtime/monitor?{{ wl_qs }}\r\n{% endif %}{% assign sb_list = sbahn_stops | split: \",\" %}{% for raw in sb_list %}{% assign eid = raw | strip %}{% if eid != \"\" %}https://fahrplan.oebb.at/bin/stboard.exe/dn?L=vs_scotty.vs_liveticker&tickerID=dep&start=yes&eqstops=no&evaId={{ eid }}&productsFilter=0000010000&showJourneys=30&boardType=dep&outputMode=tickerDataOnly\r\n{% endif %}{% endfor %}"
+polling_headers: 'Accept: application/json, text/plain'
+polling_body: ''
+id: 552226
+oauth_enabled: 'false'
+oauth_pkce_enabled: 'no'
 custom_fields:
   - keyname: wiener_linien_stops
     field_type: string
@@ -72,8 +75,8 @@ custom_fields:
     field_type: number
     name: Minimum Walk Time (minutes)
     description: >-
-      Skip departures leaving sooner than this many minutes so the next two shown
-      real times stay catchable between 5-minute e-ink refreshes.
+      Skip departures leaving sooner than this many minutes so the next shown
+      real times stay catchable between e-ink refreshes.
     default: 1
     optional: true
 
@@ -116,3 +119,6 @@ custom_fields:
     description: Header title shown in the TRMNL title bar.
     default: Vienna Transit
     optional: true
+name: Wiener Linien
+description: Real-time Vienna U-Bahn, Bus, S-Bahn, and Tram departures in both directions across multiple stops.
+refresh_interval: 15
