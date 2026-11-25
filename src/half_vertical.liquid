@@ -1,0 +1,30 @@
+<div class="layout layout--col layout--top">
+  <div class="vt-board">
+    {% if empty_message %}
+      <div class="vt-empty">
+        <div class="vt-empty__title">{{ title | default: "Vienna Transit" }}</div>
+        <div class="vt-empty__body">{{ empty_message }}</div>
+      </div>
+    {% else %}
+      {% assign rendered = 0 %}
+      {% for stop in stops %}
+        {% if rendered < 10 %}
+          <div class="vt-station">
+            <div class="vt-station__header">
+              <span class="vt-station__name">{{ stop.name }}</span>
+              <span class="vt-station__hint">Real</span>
+            </div>
+            {% for route in stop.routes %}
+              {% if rendered < 10 %}
+                {% render "route_row", row: route, time_display: time_display, size_class: "vt-row--compact", show_stop: false %}
+                {% assign rendered = rendered | plus: 1 %}
+              {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+{% render "vt_title_bar", title: title, updated: updated, rt_only: rt_only %}

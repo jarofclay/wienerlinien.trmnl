@@ -1,0 +1,14 @@
+{
+  "name": "vienna-transit-trmnl",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Zero-backend TRMNL e-ink plugin for real-time Vienna U-Bahn, Bus, S-Bahn & Tram departures in both directions",
+  "scripts": {
+    "test": "node scripts/test-transform.mjs",
+    "preview": "node scripts/preview.mjs",
+    "preview:live": "node scripts/preview.mjs --preset live",
+    "preview:static": "node scripts/preview.mjs --render-static _preview",
+    "find-stop": "node scripts/find-stop.mjs",
+    "package": "bash scripts/package.sh"
+  }
+}

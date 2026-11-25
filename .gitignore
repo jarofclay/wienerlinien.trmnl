@@ -1,0 +1,9 @@
+# Generated preview & build artifacts
+_preview/
+dist/
+
+# Dependencies & OS files
+node_modules/
+.DS_Store
+.env
+.env.*

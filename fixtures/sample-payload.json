@@ -1,0 +1,255 @@
+{
+  "IDX_0": {
+    "data": {
+      "monitors": [
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern",
+              "attributes": { "rbl": 4117 }
+            }
+          },
+          "lines": [
+            {
+              "name": "U1",
+              "towards": "Leopoldau",
+              "direction": "H",
+              "type": "ptMetro",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:11:30.000+0100", "timeReal": "2026-11-25T14:11:31.000+0100", "countdown": 3 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:16:00.000+0100", "timeReal": "2026-11-25T14:16:15.000+0100", "countdown": 8 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:21:00.000+0100", "timeReal": "2026-11-25T14:21:00.000+0100", "countdown": 13 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern",
+              "attributes": { "rbl": 4112 }
+            }
+          },
+          "lines": [
+            {
+              "name": "U1",
+              "towards": "Oberlaa",
+              "direction": "R",
+              "type": "ptMetro",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:06:30.000+0100", "timeReal": "2026-11-25T14:08:16.000+0100", "countdown": 0 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:10:00.000+0100", "timeReal": "2026-11-25T14:12:00.000+0100", "countdown": 4 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:15:30.000+0100", "timeReal": "2026-11-25T14:15:30.000+0100", "countdown": 7 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern",
+              "attributes": { "rbl": 4260 }
+            }
+          },
+          "lines": [
+            {
+              "name": "U2",
+              "towards": "Karlsplatz",
+              "direction": "H",
+              "type": "ptMetro",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:08:00.000+0100", "timeReal": "2026-11-25T14:09:20.000+0100", "countdown": 1 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:14:00.000+0100", "timeReal": "2026-11-25T14:14:10.000+0100", "countdown": 6 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern",
+              "attributes": { "rbl": 4263 }
+            }
+          },
+          "lines": [
+            {
+              "name": "U2",
+              "towards": "Seestadt",
+              "direction": "R",
+              "type": "ptMetro",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:09:30.000+0100", "timeReal": "2026-11-25T14:09:30.000+0100", "countdown": 1 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:15:00.000+0100", "timeReal": "2026-11-25T14:15:00.000+0100", "countdown": 7 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern S U",
+              "attributes": { "rbl": 2100 }
+            }
+          },
+          "lines": [
+            {
+              "name": "5B",
+              "towards": "Bhf. Heiligenstadt S U",
+              "direction": "H",
+              "type": "ptBusCity",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:11:00.000+0100", "timeReal": "2026-11-25T14:11:07.000+0100", "countdown": 3 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:21:00.000+0100", "timeReal": "2026-11-25T14:21:00.000+0100", "countdown": 13 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern SU",
+              "attributes": { "rbl": 3886 }
+            }
+          },
+          "lines": [
+            {
+              "name": "80A",
+              "towards": "Schlachthausgasse U",
+              "direction": "H",
+              "type": "ptBusCity",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:08:30.000+0100", "timeReal": "2026-11-25T14:08:30.000+0100", "countdown": 0 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:16:00.000+0100", "timeReal": "2026-11-25T14:16:00.000+0100", "countdown": 8 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:23:30.000+0100", "timeReal": "2026-11-25T14:23:30.000+0100", "countdown": 15 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern S U",
+              "attributes": { "rbl": 2704 }
+            }
+          },
+          "lines": [
+            {
+              "name": "82A",
+              "towards": "Krieau U",
+              "direction": "H",
+              "type": "ptBusCity",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:12:00.000+0100", "timeReal": "2026-11-25T14:12:00.000+0100", "countdown": 4 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:27:00.000+0100", "timeReal": "2026-11-25T14:27:00.000+0100", "countdown": 19 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern S U",
+              "attributes": { "rbl": 311 }
+            }
+          },
+          "lines": [
+            {
+              "name": "O",
+              "towards": "Bruno-Marek-Allee",
+              "direction": "H",
+              "type": "ptTram",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:13:00.000+0100", "timeReal": "2026-11-25T14:16:32.000+0100", "countdown": 8 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:21:00.000+0100", "timeReal": "2026-11-25T14:21:00.000+0100", "countdown": 13 } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "locationStop": {
+            "properties": {
+              "name": "60201040",
+              "title": "Praterstern",
+              "attributes": { "rbl": 3450 }
+            }
+          },
+          "lines": [
+            {
+              "name": "O",
+              "towards": "Raxstraße",
+              "direction": "R",
+              "type": "ptTram",
+              "realtimeSupported": true,
+              "departures": {
+                "departure": [
+                  { "departureTime": { "timePlanned": "2026-11-25T14:13:00.000+0100", "timeReal": "2026-11-25T14:13:01.000+0100", "countdown": 5 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:20:00.000+0100", "timeReal": "2026-11-25T14:20:00.000+0100", "countdown": 12 } }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "message": {
+      "value": "OK",
+      "messageCode": 1,
+      "serverTime": "2026-11-25T14:08:11.000+0100"
+    }
+  },
+  "IDX_1": {
+    "data": "journeysObj = {\"stationName\":\"Wien Praterstern Bahnhof\",\"stationEvaId\":\"1290201\",\"boardType\":\"dep\",\"rtInfo\":true,\"journey\":[{\"id\":\"1\",\"ti\":\"14:13\",\"da\":\"25.11.2026\",\"pr\":\"S 1\",\"st\":\"G&#228;nserndorf\",\"tr\":\"1\",\"rt\":false},{\"id\":\"2\",\"ti\":\"14:15\",\"da\":\"25.11.2026\",\"pr\":\"S 2\",\"st\":\"M&#246;dling\",\"tr\":\"2\",\"rt\":{\"status\":null,\"dlm\":\"3\",\"dlt\":\"14:18\",\"dld\":\"25.11.2026\"}},{\"id\":\"3\",\"ti\":\"14:43\",\"da\":\"25.11.2026\",\"pr\":\"S 1\",\"st\":\"G&#228;nserndorf\",\"tr\":\"1\",\"rt\":false},{\"id\":\"4\",\"ti\":\"14:45\",\"da\":\"25.11.2026\",\"pr\":\"S 2\",\"st\":\"M&#246;dling\",\"tr\":\"2\",\"rt\":false},{\"id\":\"5\",\"ti\":\"14:19\",\"da\":\"25.11.2026\",\"pr\":\"S 7\",\"st\":\"Flughafen Wien\",\"tr\":\"3\",\"rt\":false},{\"id\":\"6\",\"ti\":\"14:49\",\"da\":\"25.11.2026\",\"pr\":\"S 7\",\"st\":\"Flughafen Wien\",\"tr\":\"3\",\"rt\":false}]}"
+  },
+  "IDX_2": {
+    "data": "journeysObj = {\"stationName\":\"Wien Hbf (U)\",\"stationEvaId\":\"1290401\",\"boardType\":\"dep\",\"rtInfo\":true,\"journey\":[{\"id\":\"326802811\",\"ti\":\"14:17\",\"da\":\"25.11.2026\",\"pr\":\"S 1\",\"st\":\"Wien Liesing\",\"lastStop\":\"Wien Liesing Bahnhof\",\"tr\":\"2\",\"rt\":{\"status\":null,\"dlm\":\"5\",\"dlt\":\"14:22\",\"dld\":\"25.11.2026\"}},{\"id\":\"326355815\",\"ti\":\"14:21\",\"da\":\"25.11.2026\",\"pr\":\"S 60\",\"st\":\"Bruck/Leitha\",\"tr\":\"11A-B\",\"rt\":false},{\"id\":\"326053811\",\"ti\":\"14:28\",\"da\":\"25.11.2026\",\"pr\":\"S 80\",\"st\":\"Wien Aspern Nord\",\"tr\":\"3\",\"rt\":false},{\"id\":\"326046813\",\"ti\":\"14:33\",\"da\":\"25.11.2026\",\"pr\":\"S 80\",\"st\":\"Leobersdorf\",\"tr\":\"3\",\"rt\":{\"status\":\"Ausfall\",\"dlm\":\"\",\"dlt\":\"\",\"dld\":\"\"}},{\"id\":\"326365811\",\"ti\":\"14:41\",\"da\":\"25.11.2026\",\"pr\":\"S 60\",\"st\":\"Wampersdorf\",\"tr\":\"6A-B\",\"rt\":false},{\"id\":\"325368815\",\"ti\":\"14:42\",\"da\":\"25.11.2026\",\"pr\":\"S 2\",\"st\":\"M&#246;dling\",\"tr\":\"8C-E\",\"rt\":false},{\"id\":\"326805811\",\"ti\":\"14:47\",\"da\":\"25.11.2026\",\"pr\":\"S 1\",\"st\":\"Wien Liesing\",\"tr\":\"1\",\"rt\":false},{\"id\":\"326358815\",\"ti\":\"14:51\",\"da\":\"25.11.2026\",\"pr\":\"S 60\",\"st\":\"Bruck/Leitha\",\"tr\":\"11A-B\",\"rt\":false},{\"id\":\"326038815\",\"ti\":\"14:58\",\"da\":\"25.11.2026\",\"pr\":\"S 80\",\"st\":\"Wien Aspern Nord\",\"tr\":\"4A-B\",\"rt\":false}]}"
+  },
+  "trmnl": {
+    "plugin_settings": {
+      "custom_fields_values": {
+        "wiener_linien_stops": "60201040",
+        "sbahn_stops": "1290201, 1290401",
+        "include_metro": true,
+        "include_bus": true,
+        "include_sbahn": true,
+        "include_tram": false,
+        "line_filter": "",
+        "min_walk_minutes": 1,
+        "realtime_only": true,
+        "time_display": "clock",
+        "widget_title": "Vienna Transit"
+      }
+    }
+  }
+}

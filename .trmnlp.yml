@@ -1,0 +1,114 @@
+# Local development configuration for trmnlp (https://github.com/usetrmnl/trmnlp)
+# Run `./bin/trmnlp serve` (requires Docker or trmnlp gem) or `node scripts/preview.mjs` (zero-dependency Node).
+watch:
+  - .trmnlp.yml
+  - src
+
+custom_fields:
+  wiener_linien_stops: '60201040'
+  sbahn_stops: '1290201,1290401'
+  include_metro: true
+  include_bus: true
+  include_sbahn: true
+  include_tram: false
+  line_filter: ''
+  min_walk_minutes: 1
+  realtime_only: true
+  time_display: clock
+  widget_title: Vienna Transit
+
+variables:
+  trmnl:
+    plugin_settings:
+      custom_fields_values:
+        wiener_linien_stops: '60201040'
+        sbahn_stops: '1290201,1290401'
+        include_metro: true
+        include_bus: true
+        include_sbahn: true
+        include_tram: false
+        line_filter: ''
+        min_walk_minutes: 1
+        realtime_only: true
+        time_display: clock
+        widget_title: Vienna Transit
+  title: Vienna Transit
+  updated: '14:08'
+  time_display: clock
+  rt_only: true
+  stop_count: 2
+  route_count: 10
+  empty_message: null
+  stops:
+    - name: Praterstern
+      col: L
+      routes:
+        - mode: metro
+          line: U1
+          to: Alaudagasse
+          t1: { t: '14:11', m: 3 }
+          t2: { t: '14:15', m: 7 }
+        - mode: metro
+          line: U1
+          to: Leopoldau
+          t1: { t: '14:11', m: 3 }
+          t2: { t: '14:16', m: 8 }
+        - mode: metro
+          line: U2
+          to: Karlsplatz
+          t1: { t: '14:09', m: 1, d: 1 }
+          t2: { t: '14:14', m: 6 }
+        - mode: metro
+          line: U2
+          to: Seestadt
+          t1: { t: '14:09', m: 1 }
+          t2: { t: '14:15', m: 7 }
+        - mode: sbahn
+          line: S2
+          to: Mödling
+          t1: { t: '14:14', m: 6 }
+          t2: { t: '14:44', m: 36 }
+        - mode: bus
+          line: 5B
+          to: Bhf. Heiligenstadt
+          t1: { t: '14:11', m: 3 }
+          t2: { t: '14:21', m: 13 }
+        - mode: bus
+          line: 80A
+          to: Schlachthausgasse
+          t1: { t: '14:16', m: 8 }
+          t2: { t: '14:23', m: 15 }
+        - mode: bus
+          line: 82A
+          to: Krieau
+          t1: { t: '14:12', m: 4 }
+          t2: { t: '14:27', m: 19 }
+    - name: Wien Hbf
+      col: R
+      routes:
+        - mode: sbahn
+          line: S1
+          to: Wien Liesing
+          t1: { t: '14:22', m: 14, d: 5 }
+          t2: { t: '14:47', m: 39 }
+        - mode: sbahn
+          line: S60
+          to: Bruck/Leitha
+          t1: { t: '14:21', m: 13 }
+          t2: { t: '14:51', m: 43 }
+        - mode: sbahn
+          line: S80
+          to: Wien Aspern Nord
+          t1: { t: '14:28', m: 20 }
+          t2: { t: '14:58', m: 50 }
+  rows:
+    - { stop: Praterstern, mode: metro, line: U1, to: Alaudagasse, t1: { t: '14:11', m: 3 }, t2: { t: '14:15', m: 7 } }
+    - { stop: Praterstern, mode: metro, line: U1, to: Leopoldau, t1: { t: '14:11', m: 3 }, t2: { t: '14:16', m: 8 } }
+    - { stop: Praterstern, mode: metro, line: U2, to: Karlsplatz, t1: { t: '14:09', m: 1, d: 1 }, t2: { t: '14:14', m: 6 } }
+    - { stop: Praterstern, mode: metro, line: U2, to: Seestadt, t1: { t: '14:09', m: 1 }, t2: { t: '14:15', m: 7 } }
+    - { stop: Praterstern, mode: sbahn, line: S2, to: Mödling, t1: { t: '14:14', m: 6 }, t2: { t: '14:44', m: 36 } }
+    - { stop: Praterstern, mode: bus, line: 5B, to: Bhf. Heiligenstadt, t1: { t: '14:11', m: 3 }, t2: { t: '14:21', m: 13 } }
+    - { stop: Praterstern, mode: bus, line: 80A, to: Schlachthausgasse, t1: { t: '14:16', m: 8 }, t2: { t: '14:23', m: 15 } }
+    - { stop: Praterstern, mode: bus, line: 82A, to: Krieau, t1: { t: '14:12', m: 4 }, t2: { t: '14:27', m: 19 } }
+    - { stop: Wien Hbf, mode: sbahn, line: S1, to: Wien Liesing, t1: { t: '14:22', m: 14, d: 5 }, t2: { t: '14:47', m: 39 } }
+    - { stop: Wien Hbf, mode: sbahn, line: S60, to: Bruck/Leitha, t1: { t: '14:21', m: 13 }, t2: { t: '14:51', m: 43 } }

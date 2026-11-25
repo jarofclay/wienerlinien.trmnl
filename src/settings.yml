@@ -1,0 +1,104 @@
+---
+name: Vienna Transit Departures
+strategy: polling
+refresh_interval: 5
+polling_verb: GET
+polling_url: |-
+  {% assign wl_list = wiener_linien_stops | split: "," %}{% assign wl_qs = "" %}{% for raw in wl_list %}{% assign sid = raw | strip %}{% if sid != "" %}{% if wl_qs != "" %}{% assign wl_qs = wl_qs | append: "&" %}{% endif %}{% if sid.size >= 7 %}{% assign wl_qs = wl_qs | append: "diva=" | append: sid %}{% else %}{% assign wl_qs = wl_qs | append: "stopId=" | append: sid %}{% endif %}{% endif %}{% endfor %}{% if wl_qs != "" %}https://www.wienerlinien.at/ogd_realtime/monitor?{{ wl_qs }}
+  {% endif %}{% assign sb_list = sbahn_stops | split: "," %}{% for raw in sb_list %}{% assign eid = raw | strip %}{% if eid != "" %}https://fahrplan.oebb.at/bin/stboard.exe/dn?L=vs_scotty.vs_liveticker&tickerID=dep&start=yes&eqstops=no&evaId={{ eid }}&productsFilter=0000010000&showJourneys=30&boardType=dep&outputMode=tickerDataOnly
+  {% endif %}{% endfor %}
+polling_headers: "Accept: application/json, text/plain"
+no_screen_padding: 'no'
+dark_mode: 'no'
+custom_fields:
+  - keyname: wiener_linien_stops
+    field_type: string
+    name: Wiener Linien Stops (DIVA or Stop IDs)
+    description: >-
+      Comma-separated 8-digit DIVA station IDs (returns ALL platforms & both directions for U-Bahn, Bus & Tram)
+      or 1-5 digit RBL stop IDs for specific platforms.
+    help_text: >-
+      Examples: 60201040 (Praterstern), 60200188 (Burggasse-Stadthalle).
+      Run `npm run find-stop -- "Station Name"` to look up any stop in Vienna.
+    default: '60201040'
+    optional: true
+
+  - keyname: sbahn_stops
+    field_type: string
+    name: S-Bahn Stations (ÖBB EVA IDs)
+    description: >-
+      Optional comma-separated ÖBB station EVA IDs for real-time S-Bahn departures in both directions.
+      Stations sharing the same name are merged automatically. Leave blank if not needed.
+    help_text: >-
+      Examples: 1290201 (Wien Praterstern), 1290401 (Wien Hbf).
+      Run `npm run find-stop -- "Wien Mitte"` to look up any station EVA ID.
+    default: ''
+    optional: true
+
+  - keyname: include_metro
+    field_type: boolean
+    name: Show U-Bahn (Metro)
+    description: Include Vienna U-Bahn lines (U1-U6).
+    default: true
+
+  - keyname: include_bus
+    field_type: boolean
+    name: Show Bus
+    description: Include Wiener Linien city and night buses.
+    default: true
+
+  - keyname: include_sbahn
+    field_type: boolean
+    name: Show S-Bahn
+    description: Include ÖBB S-Bahn lines (S1-S80).
+    default: true
+
+  - keyname: include_tram
+    field_type: boolean
+    name: Show Tram (Straßenbahn)
+    description: Include Vienna tram / Straßenbahn lines (e.g. D, O, 5, 18, 62).
+    default: true
+
+  - keyname: line_filter
+    field_type: string
+    name: Filter Specific Lines (optional)
+    description: >-
+      Comma-separated line names to display (e.g. U1, 5B, 13A, S2, S7).
+      Leave empty to show all lines at your selected stops.
+    default: ''
+    optional: true
+
+  - keyname: min_walk_minutes
+    field_type: number
+    name: Minimum Walk Time (minutes)
+    description: >-
+      Skip departures leaving sooner than this many minutes so the next two shown
+      real times stay catchable between 5-minute e-ink refreshes.
+    default: 1
+    optional: true
+
+  - keyname: realtime_only
+    field_type: boolean
+    name: Real-Time Departures Only
+    description: >-
+      Only display live tracked departures (excludes scheduled-only timetable fallback).
+    default: true
+
+  - keyname: time_display
+    field_type: select
+    name: Time Format
+    description: >-
+      Clock times (14:12 · 14:20) stay accurate on a 5-minute refresh screen;
+      Countdown shows minutes from the last refresh.
+    options:
+      - clock
+      - clock_and_min
+      - minutes
+    default: clock
+
+  - keyname: widget_title
+    field_type: string
+    name: Widget Title
+    description: Header title shown in the TRMNL title bar.
+    default: Vienna Transit
+    optional: true

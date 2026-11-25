@@ -1,0 +1,452 @@
+<style>
+  .vt-board {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    color: #000000;
+    font-family: inherit;
+    overflow: hidden;
+  }
+
+  .vt-grid {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+    height: 100%;
+    align-content: start;
+  }
+
+  .vt-grid--1 {
+    grid-template-columns: 1fr;
+  }
+
+  .vt-grid--2 {
+    grid-template-columns: 1fr 1fr;
+    column-gap: 18px;
+  }
+
+  .vt-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .vt-grid--2 .vt-col:nth-child(2) {
+    border-left: 2px solid #000000;
+    padding-left: 16px;
+  }
+
+  .vt-station {
+    margin-bottom: 10px;
+  }
+
+  .vt-station:last-child {
+    margin-bottom: 0;
+  }
+
+  .vt-station__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+  }
+
+  .vt-station__name {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vt-station__hint {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+
+  .vt-row {
+    display: grid;
+    grid-template-columns: 24px 48px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #000000;
+  }
+
+  .vt-row:last-child {
+    border-bottom: none;
+  }
+
+  .vt-row--large {
+    grid-template-columns: 28px 56px minmax(0, 1fr) auto;
+    column-gap: 10px;
+    padding: 9px 0;
+  }
+
+  .vt-row--compact {
+    grid-template-columns: 20px 42px minmax(0, 1fr) auto;
+    column-gap: 6px;
+    padding: 4px 0;
+  }
+
+  .vt-row--quad {
+    grid-template-columns: 18px 38px minmax(0, 1fr) auto;
+    column-gap: 5px;
+    padding: 3px 0;
+  }
+
+  .vt-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .vt-row--large .vt-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .vt-row--compact .vt-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .vt-row--quad .vt-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .vt-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .vt-line {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 1;
+    padding: 4px 4px;
+    border-radius: 4px;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    text-align: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .vt-row--large .vt-line {
+    font-size: 17px;
+    padding: 5px 6px;
+  }
+
+  .vt-row--compact .vt-line {
+    font-size: 12px;
+    padding: 3px 3px;
+    border-width: 1.5px;
+  }
+
+  .vt-row--quad .vt-line {
+    font-size: 11px;
+    padding: 2px 2px;
+    border-width: 1.5px;
+  }
+
+  .vt-line--metro {
+    background: #000000;
+    color: #ffffff;
+  }
+
+  .vt-line--sbahn {
+    background: #000000;
+    color: #ffffff;
+    border-radius: 999px;
+  }
+
+  .vt-line--bus {
+    background: #ffffff;
+    color: #000000;
+    border-radius: 4px;
+  }
+
+  .vt-line--tram {
+    background: #ffffff;
+    color: #000000;
+    border-radius: 4px;
+    box-shadow: inset 0 0 0 1px #ffffff, inset 0 0 0 2.5px #000000;
+  }
+
+  .vt-dest {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .vt-dest__to {
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vt-row--large .vt-dest__to {
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .vt-row--compact .vt-dest__to {
+    font-size: 13px;
+  }
+
+  .vt-row--quad .vt-dest__to {
+    font-size: 12px;
+  }
+
+  .vt-dest__stop {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .vt-times {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 6px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .vt-row--large .vt-times {
+    gap: 10px;
+  }
+
+  .vt-row--compact .vt-times,
+  .vt-row--quad .vt-times {
+    gap: 4px;
+  }
+
+  .vt-t {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+
+  .vt-t--primary {
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .vt-t--secondary {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .vt-row--large .vt-t--primary {
+    font-size: 23px;
+  }
+
+  .vt-row--large .vt-t--secondary {
+    font-size: 18px;
+  }
+
+  .vt-row--compact .vt-t--primary {
+    font-size: 14px;
+  }
+
+  .vt-row--compact .vt-t--secondary {
+    font-size: 12px;
+  }
+
+  .vt-row--quad .vt-t--primary {
+    font-size: 13px;
+  }
+
+  .vt-row--quad .vt-t--secondary {
+    font-size: 11px;
+  }
+
+  .vt-t__sep {
+    font-weight: 400;
+    font-size: 12px;
+  }
+
+  .vt-t__min {
+    font-size: 0.72em;
+    font-weight: 600;
+  }
+
+  .vt-delay {
+    display: inline-block;
+    background: #000000;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 800;
+    line-height: 1;
+    padding: 2px 3px;
+    border-radius: 3px;
+    vertical-align: top;
+    margin-left: 1px;
+  }
+
+  .vt-row--quad .vt-delay {
+    font-size: 9px;
+    padding: 1px 2px;
+  }
+
+  .vt-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 20px;
+    gap: 8px;
+  }
+
+  .vt-empty__title {
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .vt-empty__body {
+    font-size: 13px;
+    max-width: 440px;
+    line-height: 1.4;
+  }
+
+  .vt-title-icon {
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+  }
+
+  .vt-live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 700;
+  }
+
+  .vt-live-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #000000;
+  }
+</style>
+
+{% template mode_icon %}
+  {% if mode == "metro" %}
+    <svg viewBox="0 0 24 24" aria-label="U-Bahn">
+      <rect x="1" y="1" width="22" height="22" rx="4" fill="#000"/>
+      <path d="M7.2 5.5h3.1v8.2c0 1.4.7 2.2 1.7 2.2s1.7-.8 1.7-2.2V5.5h3.1v8.1c0 3.2-1.9 5.1-4.8 5.1s-4.8-1.9-4.8-5.1V5.5z" fill="#fff"/>
+    </svg>
+  {% elsif mode == "sbahn" %}
+    <svg viewBox="0 0 24 24" aria-label="S-Bahn">
+      <circle cx="12" cy="12" r="11" fill="#000"/>
+      <path d="M15.8 8.3c-.7-.8-2-1.3-3.5-1.3-1.8 0-3 .7-3 1.7 0 1 1 1.4 2.9 1.8l1.2.2c3 .6 4.4 1.8 4.4 3.9 0 2.7-2.3 4.4-5.9 4.4-2.6 0-4.7-.9-5.8-2.3l1.9-1.9c.9 1 2.2 1.6 4 1.6 1.8 0 3-.7 3-1.7 0-.9-.7-1.4-2.5-1.7l-1.4-.3c-2.8-.6-4.5-1.8-4.5-3.9 0-2.6 2.3-4.3 5.7-4.3 2.3 0 4.2.7 5.3 1.9l-1.8 1.9z" fill="#fff"/>
+    </svg>
+  {% elsif mode == "bus" %}
+    <svg viewBox="0 0 24 24" aria-label="Bus">
+      <rect x="3" y="2.5" width="18" height="16.5" rx="3" fill="#000"/>
+      <rect x="5.2" y="5" width="13.6" height="6.8" rx="1.2" fill="#fff"/>
+      <circle cx="7.4" cy="15.4" r="1.4" fill="#fff"/>
+      <circle cx="16.6" cy="15.4" r="1.4" fill="#fff"/>
+      <rect x="5.5" y="19" width="3.2" height="2.6" rx="1" fill="#000"/>
+      <rect x="15.3" y="19" width="3.2" height="2.6" rx="1" fill="#000"/>
+    </svg>
+  {% else %}
+    <svg viewBox="0 0 24 24" aria-label="Tram">
+      <path d="M8.5 2h7M12 2v3" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+      <rect x="4" y="5" width="16" height="14" rx="3" fill="#000"/>
+      <rect x="6" y="7.2" width="12" height="5.5" rx="1" fill="#fff"/>
+      <circle cx="8" cy="15.8" r="1.2" fill="#fff"/>
+      <circle cx="16" cy="15.8" r="1.2" fill="#fff"/>
+      <path d="M7.5 19l-1.5 3M16.5 19l1.5 3M6 22h12" stroke="#000" stroke-width="1.8" stroke-linecap="round"/>
+    </svg>
+  {% endif %}
+{% endtemplate %}
+
+{% template dep_time %}
+  {% if dep %}
+    <span class="vt-t {% if primary %}vt-t--primary{% else %}vt-t--secondary{% endif %}">
+      {% if time_display == "minutes" %}
+        <span>{{ dep.m }}&#8242;</span>
+      {% elsif time_display == "clock_and_min" %}
+        <span>{{ dep.t }}</span><span class="vt-t__min">({{ dep.m }}&#8242;)</span>
+      {% else %}
+        <span>{{ dep.t }}</span>
+      {% endif %}
+      {% if dep.d and dep.d > 0 %}
+        <span class="vt-delay">+{{ dep.d }}</span>
+      {% endif %}
+    </span>
+  {% endif %}
+{% endtemplate %}
+
+{% template route_row %}
+  <div class="vt-row {{ size_class }}">
+    <span class="vt-icon">
+      {% render "mode_icon", mode: row.mode %}
+    </span>
+    <span class="vt-line vt-line--{{ row.mode }}">{{ row.line }}</span>
+    <div class="vt-dest">
+      <span class="vt-dest__to">{{ row.to }}</span>
+      {% if show_stop and row.stop %}
+        <span class="vt-dest__stop">{{ row.stop }}</span>
+      {% endif %}
+    </div>
+    <div class="vt-times">
+      {% render "dep_time", dep: row.t1, primary: true, time_display: time_display %}
+      {% if row.t2 %}
+        <span class="vt-t__sep">&middot;</span>
+        {% render "dep_time", dep: row.t2, primary: false, time_display: time_display %}
+      {% endif %}
+    </div>
+  </div>
+{% endtemplate %}
+
+{% template vt_title_bar %}
+  <div class="title_bar">
+    <span class="vt-title-icon">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <rect x="1" y="1" width="22" height="22" rx="4" fill="#000"/>
+        <path d="M5.5 7.5h13M12 7.5v9.5M7 17h10" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    <span class="title">{{ title | default: "Vienna Transit" }}</span>
+    <span class="instance">
+      <span class="vt-live-pill">
+        {% if rt_only %}<span class="vt-live-dot"></span>LIVE &middot; {% endif %}Updated {{ updated | default: "--:--" }}
+      </span>
+    </span>
+  </div>
+{% endtemplate %}

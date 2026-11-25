@@ -1,0 +1,40 @@
+<div class="layout layout--col layout--top">
+  <div class="vt-board">
+    {% if empty_message %}
+      <div class="vt-empty">
+        <div class="vt-empty__title">{{ title | default: "Vienna Transit" }}</div>
+        <div class="vt-empty__body">{{ empty_message }}</div>
+      </div>
+    {% else %}
+      {% assign show_stop_sub = false %}
+      {% if stop_count > 1 %}{% assign show_stop_sub = true %}{% endif %}
+      {% assign max_per_col = 4 %}
+      <div class="vt-grid vt-grid--2">
+        <div class="vt-col">
+          {% if stop_count == 1 %}
+            <div class="vt-station__header">
+              <span class="vt-station__name">{{ stops.first.name }}</span>
+              <span class="vt-station__hint">Real Time</span>
+            </div>
+          {% endif %}
+          {% for row in rows limit: max_per_col %}
+            {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--compact", show_stop: show_stop_sub %}
+          {% endfor %}
+        </div>
+        <div class="vt-col">
+          {% if stop_count == 1 %}
+            <div class="vt-station__header">
+              <span class="vt-station__name">{{ stops.first.name }}</span>
+              <span class="vt-station__hint">Next 2</span>
+            </div>
+          {% endif %}
+          {% for row in rows offset: max_per_col limit: max_per_col %}
+            {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--compact", show_stop: show_stop_sub %}
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% render "vt_title_bar", title: title, updated: updated, rt_only: rt_only %}
