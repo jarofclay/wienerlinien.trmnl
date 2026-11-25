@@ -7,16 +7,18 @@
       </div>
     {% else %}
       {% assign rendered = 0 %}
+      {% assign hv_cap = 10 %}
+      {% if times_per_route >= 4 %}{% assign hv_cap = 8 %}{% endif %}
       {% for stop in stops %}
-        {% if rendered < 10 %}
+        {% if rendered < hv_cap %}
           <div class="vt-station">
             <div class="vt-station__header">
               <span class="vt-station__name">{{ stop.name }}</span>
-              <span class="vt-station__hint">Real</span>
+              <span class="vt-station__hint">{% if rt_only %}Real{% else %}Times{% endif %}</span>
             </div>
             {% for route in stop.routes %}
-              {% if rendered < 10 %}
-                {% render "route_row", row: route, time_display: time_display, size_class: "vt-row--compact", show_stop: false %}
+              {% if rendered < hv_cap %}
+                {% render "route_row", row: route, time_display: time_display, size_class: "vt-row--compact", show_stop: false, max_times: 4, stack_four: true %}
                 {% assign rendered = rendered | plus: 1 %}
               {% endif %}
             {% endfor %}

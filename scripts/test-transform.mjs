@@ -45,6 +45,7 @@ test('merges multi-URL Wiener Linien + ÖBB payloads and shows both directions',
 
   assert.equal(d.title, 'Vienna Transit');
   assert.equal(d.updated, '14:08');
+  assert.equal(d.times_per_route, 2);
   assert.equal(d.empty_message, null);
 
   // Praterstern WL + Praterstern ÖBB merge into 1 station; Wien Hbf is 2nd station
@@ -69,17 +70,34 @@ test('merges multi-URL Wiener Linien + ÖBB payloads and shows both directions',
   assert.equal(sbLines.length, 3);
   const s1 = sbLines.find((r) => r.line === 'S1');
   assert.equal(s1.to, 'Gänserndorf');
-  assert.equal(s1.t1.t, '14:13');
-  assert.equal(s1.t2.t, '14:43');
+  assert.equal(s1.ts[0].t, '14:13');
+  assert.equal(s1.ts[1].t, '14:43');
 
   const s2 = sbLines.find((r) => r.line === 'S2');
   assert.equal(s2.to, 'Mödling');
-  assert.equal(s2.t1.t, '14:18'); // Real delayed time (14:15 + 3 min)
-  assert.equal(s2.t1.d, 3);
-  assert.equal(s2.t2.t, '14:45');
+  assert.equal(s2.ts[0].t, '14:18'); // Real delayed time (14:15 + 3 min)
+  assert.equal(s2.ts[0].d, 3);
+  assert.equal(s2.ts[1].t, '14:45');
 
-  // Tram excluded by default (include_tram: false)
+  // Tram excluded when include_tram: false
   assert.equal(praterRoutes.filter((r) => r.mode === 'tram').length, 0);
+});
+
+test('supports times_per_route = 3 and 4 for 15-minute Free TRMNL refresh', () => {
+  const clone = structuredClone(sample);
+  clone.trmnl.plugin_settings.custom_fields_values.times_per_route = '4';
+  const out = run(clone);
+  assert.equal(out.data.times_per_route, 4);
+
+  const u1Leo = out.data.stops[0].routes.find((r) => r.line === 'U1' && r.to === 'Leopoldau');
+  assert.deepEqual(
+    u1Leo.ts.map((x) => x.t),
+    ['14:11', '14:16', '14:21', '14:26']
+  );
+
+  const bytes = Buffer.byteLength(JSON.stringify(out), 'utf8');
+  assert.ok(bytes < 5000, `Expected payload < 5000 bytes with 4 times/route, got ${bytes}`);
+  console.log(`        (Payload size with times_per_route=4: ${bytes} bytes)`);
 });
 
 test('skips cancelled S-Bahn trains and applies real-time delay clock', () => {
@@ -91,27 +109,27 @@ test('skips cancelled S-Bahn trains and applies real-time delay clock', () => {
 
   // S1 -> Wien Liesing delayed +5 min: scheduled 14:17 -> real 14:22
   const s1 = hbfRoutes.find((r) => r.line === 'S1');
-  assert.equal(s1.t1.t, '14:22');
-  assert.equal(s1.t1.d, 5);
-  assert.equal(s1.t2.t, '14:47');
+  assert.equal(s1.ts[0].t, '14:22');
+  assert.equal(s1.ts[0].d, 5);
+  assert.equal(s1.ts[1].t, '14:47');
 });
 
 test('applies minimum walk time buffer to avoid uncatchable 0-min departures', () => {
   const out = run(sample);
   const praterRoutes = out.data.stops[0].routes;
-  // U1 -> Oberlaa had a 0-min departure at 14:08; with min_walk_minutes=1, t1 must be 14:12 (+2 delay)
+  // U1 -> Oberlaa had a 0-min departure at 14:08; with min_walk_minutes=1, ts[0] must be 14:12 (+2 delay)
   const u1Oberlaa = praterRoutes.find((r) => r.line === 'U1' && r.to === 'Oberlaa');
-  assert.equal(u1Oberlaa.t1.t, '14:12');
-  assert.equal(u1Oberlaa.t1.d, 2);
-  assert.equal(u1Oberlaa.t2.t, '14:15');
+  assert.equal(u1Oberlaa.ts[0].t, '14:12');
+  assert.equal(u1Oberlaa.ts[0].d, 2);
+  assert.equal(u1Oberlaa.ts[1].t, '14:15');
 
-  // 80A had a 0-min departure at 14:08; t1 must be 14:16, t2 14:23
+  // 80A had a 0-min departure at 14:08; ts[0] must be 14:16, ts[1] 14:23
   const bus80A = praterRoutes.find((r) => r.line === '80A');
-  assert.equal(bus80A.t1.t, '14:16');
-  assert.equal(bus80A.t2.t, '14:23');
+  assert.equal(bus80A.ts[0].t, '14:16');
+  assert.equal(bus80A.ts[1].t, '14:23');
 });
 
-test('excludes scheduled-only Wiener Linien departures when realtime_only is true', () => {
+test('excludes scheduled-only Wiener Linien departures when realtime_only is true and tags fallback with s:1 when false', () => {
   const schedInput = {
     data: {
       monitors: [
@@ -140,14 +158,18 @@ test('excludes scheduled-only Wiener Linien departures when realtime_only is tru
 
   const rtOut = run(schedInput);
   assert.equal(rtOut.data.rows.length, 1);
-  assert.equal(rtOut.data.rows[0].t1.t, '14:23');
-  assert.equal(rtOut.data.rows[0].t2, null);
+  assert.equal(rtOut.data.rows[0].ts.length, 1);
+  assert.equal(rtOut.data.rows[0].ts[0].t, '14:23');
+  assert.equal(rtOut.data.rows[0].ts[0].s, undefined);
 
-  // When realtime_only is false, scheduled-only departure is included
+  // When realtime_only is false, scheduled-only departure is included and tagged with s: 1
   schedInput.trmnl.plugin_settings.custom_fields_values.realtime_only = false;
   const allOut = run(schedInput);
-  assert.equal(allOut.data.rows[0].t1.t, '14:15');
-  assert.equal(allOut.data.rows[0].t2.t, '14:23');
+  assert.equal(allOut.data.rows[0].ts.length, 2);
+  assert.equal(allOut.data.rows[0].ts[0].t, '14:15');
+  assert.equal(allOut.data.rows[0].ts[0].s, 1);
+  assert.equal(allOut.data.rows[0].ts[1].t, '14:23');
+  assert.equal(allOut.data.rows[0].ts[1].s, undefined);
 });
 
 test('handles single-URL input, tram toggle, and line_filter', () => {

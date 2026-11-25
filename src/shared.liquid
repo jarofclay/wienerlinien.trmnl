@@ -234,9 +234,28 @@
     display: inline-flex;
     align-items: baseline;
     justify-content: flex-end;
-    gap: 6px;
+    gap: 5px;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
+  }
+
+  .vt-times--stack {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    line-height: 1.05;
+  }
+
+  .vt-times__line {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 5px;
+  }
+
+  .vt-times__line--sub {
+    opacity: 1;
   }
 
   .vt-row--large .vt-times {
@@ -255,21 +274,26 @@
   }
 
   .vt-t--primary {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 800;
   }
 
   .vt-t--secondary {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
   }
 
+  .vt-t--sched {
+    font-style: italic;
+    font-weight: 500;
+  }
+
   .vt-row--large .vt-t--primary {
-    font-size: 23px;
+    font-size: 22px;
   }
 
   .vt-row--large .vt-t--secondary {
-    font-size: 18px;
+    font-size: 17px;
   }
 
   .vt-row--compact .vt-t--primary {
@@ -277,7 +301,7 @@
   }
 
   .vt-row--compact .vt-t--secondary {
-    font-size: 12px;
+    font-size: 11.5px;
   }
 
   .vt-row--quad .vt-t--primary {
@@ -397,13 +421,13 @@
 
 {% template dep_time %}
   {% if dep %}
-    <span class="vt-t {% if primary %}vt-t--primary{% else %}vt-t--secondary{% endif %}">
+    <span class="vt-t {% if primary %}vt-t--primary{% else %}vt-t--secondary{% endif %}{% if dep.s %} vt-t--sched{% endif %}">
       {% if time_display == "minutes" %}
-        <span>{{ dep.m }}&#8242;</span>
+        <span>{% if dep.s %}~{% endif %}{{ dep.m }}&#8242;</span>
       {% elsif time_display == "clock_and_min" %}
-        <span>{{ dep.t }}</span><span class="vt-t__min">({{ dep.m }}&#8242;)</span>
+        <span>{% if dep.s %}~{% endif %}{{ dep.t }}</span><span class="vt-t__min">({{ dep.m }}&#8242;)</span>
       {% else %}
-        <span>{{ dep.t }}</span>
+        <span>{% if dep.s %}~{% endif %}{{ dep.t }}</span>
       {% endif %}
       {% if dep.d and dep.d > 0 %}
         <span class="vt-delay">+{{ dep.d }}</span>
@@ -413,6 +437,8 @@
 {% endtemplate %}
 
 {% template route_row %}
+  {% assign lim = max_times | default: 4 %}
+  {% assign stack = stack_four | default: false %}
   <div class="vt-row {{ size_class }}">
     <span class="vt-icon">
       {% render "mode_icon", mode: row.mode %}
@@ -424,13 +450,29 @@
         <span class="vt-dest__stop">{{ row.stop }}</span>
       {% endif %}
     </div>
-    <div class="vt-times">
-      {% render "dep_time", dep: row.t1, primary: true, time_display: time_display %}
-      {% if row.t2 %}
-        <span class="vt-t__sep">&middot;</span>
-        {% render "dep_time", dep: row.t2, primary: false, time_display: time_display %}
-      {% endif %}
-    </div>
+    {% if stack and row.ts.size > 3 and lim >= 4 %}
+      <div class="vt-times vt-times--stack">
+        <div class="vt-times__line">
+          {% for dep in row.ts limit: 2 %}
+            {% if forloop.index > 1 %}<span class="vt-t__sep">&middot;</span>{% endif %}
+            {% render "dep_time", dep: dep, primary: forloop.first, time_display: time_display %}
+          {% endfor %}
+        </div>
+        <div class="vt-times__line vt-times__line--sub">
+          {% for dep in row.ts offset: 2 limit: 2 %}
+            {% if forloop.index > 1 %}<span class="vt-t__sep">&middot;</span>{% endif %}
+            {% render "dep_time", dep: dep, primary: false, time_display: time_display %}
+          {% endfor %}
+        </div>
+      </div>
+    {% else %}
+      <div class="vt-times">
+        {% for dep in row.ts limit: lim %}
+          {% if forloop.index > 1 %}<span class="vt-t__sep">&middot;</span>{% endif %}
+          {% render "dep_time", dep: dep, primary: forloop.first, time_display: time_display %}
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 {% endtemplate %}
 

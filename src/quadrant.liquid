@@ -15,7 +15,7 @@
         </div>
       {% endif %}
       {% for row in rows limit: 5 %}
-        {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--quad", show_stop: show_stop_sub %}
+        {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--quad", show_stop: show_stop_sub, max_times: 3, stack_four: false %}
       {% endfor %}
     {% endif %}
   </div>

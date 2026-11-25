@@ -12,10 +12,10 @@
             <div class="vt-station">
               <div class="vt-station__header">
                 <span class="vt-station__name">{{ stop.name }}</span>
-                <span class="vt-station__hint">Next 2 Real Times</span>
+                <span class="vt-station__hint">Next {{ times_per_route | default: 2 }} {% if rt_only %}Real {% endif %}Times</span>
               </div>
               {% for route in stop.routes limit: 7 %}
-                {% render "route_row", row: route, time_display: time_display, size_class: "vt-row--large", show_stop: false %}
+                {% render "route_row", row: route, time_display: time_display, size_class: "vt-row--large", show_stop: false, max_times: 4, stack_four: false %}
               {% endfor %}
             </div>
           {% endfor %}
@@ -29,10 +29,10 @@
               <div class="vt-station">
                 <div class="vt-station__header">
                   <span class="vt-station__name">{{ stop.name }}</span>
-                  <span class="vt-station__hint">Real Time</span>
+                  <span class="vt-station__hint">{% if rt_only %}Real Time{% else %}Departures{% endif %}</span>
                 </div>
                 {% for route in stop.routes %}
-                  {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false %}
+                  {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false, max_times: 4, stack_four: true %}
                 {% endfor %}
               </div>
             {% endif %}
@@ -44,10 +44,10 @@
               <div class="vt-station">
                 <div class="vt-station__header">
                   <span class="vt-station__name">{{ stop.name }}</span>
-                  <span class="vt-station__hint">Real Time</span>
+                  <span class="vt-station__hint">{% if rt_only %}Real Time{% else %}Departures{% endif %}</span>
                 </div>
                 {% for route in stop.routes %}
-                  {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false %}
+                  {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false, max_times: 4, stack_four: true %}
                 {% endfor %}
               </div>
             {% endif %}
@@ -56,23 +56,25 @@
       </div>
     {% else %}
       {% assign single_stop = stops.first %}
+      {% assign col_cap = 10 %}
+      {% if times_per_route >= 4 %}{% assign col_cap = 8 %}{% endif %}
       {% assign half = single_stop.routes.size | plus: 1 | divided_by: 2 %}
-      {% if half > 10 %}{% assign half = 10 %}{% endif %}
+      {% if half > col_cap %}{% assign half = col_cap %}{% endif %}
       <div class="vt-station">
         <div class="vt-station__header">
           <span class="vt-station__name">{{ single_stop.name }}</span>
-          <span class="vt-station__hint">Next 2 Real Times &middot; All Directions</span>
+          <span class="vt-station__hint">Next {{ times_per_route | default: 2 }} {% if rt_only %}Real {% endif %}Times &middot; All Directions</span>
         </div>
       </div>
       <div class="vt-grid vt-grid--2">
         <div class="vt-col">
           {% for route in single_stop.routes limit: half %}
-            {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false %}
+            {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false, max_times: 4, stack_four: true %}
           {% endfor %}
         </div>
         <div class="vt-col">
-          {% for route in single_stop.routes offset: half limit: 10 %}
-            {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false %}
+          {% for route in single_stop.routes offset: half limit: col_cap %}
+            {% render "route_row", row: route, time_display: time_display, size_class: "", show_stop: false, max_times: 4, stack_four: true %}
           {% endfor %}
         </div>
       </div>

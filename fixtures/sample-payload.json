@@ -21,7 +21,8 @@
                 "departure": [
                   { "departureTime": { "timePlanned": "2026-11-25T14:11:30.000+0100", "timeReal": "2026-11-25T14:11:31.000+0100", "countdown": 3 } },
                   { "departureTime": { "timePlanned": "2026-11-25T14:16:00.000+0100", "timeReal": "2026-11-25T14:16:15.000+0100", "countdown": 8 } },
-                  { "departureTime": { "timePlanned": "2026-11-25T14:21:00.000+0100", "timeReal": "2026-11-25T14:21:00.000+0100", "countdown": 13 } }
+                  { "departureTime": { "timePlanned": "2026-11-25T14:21:00.000+0100", "timeReal": "2026-11-25T14:21:00.000+0100", "countdown": 13 } },
+                  { "departureTime": { "timePlanned": "2026-11-25T14:26:00.000+0100", "timeReal": "2026-11-25T14:26:00.000+0100", "countdown": 18 } }
                 ]
               }
             }

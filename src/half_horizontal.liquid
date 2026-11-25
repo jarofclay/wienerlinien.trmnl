@@ -14,22 +14,22 @@
           {% if stop_count == 1 %}
             <div class="vt-station__header">
               <span class="vt-station__name">{{ stops.first.name }}</span>
-              <span class="vt-station__hint">Real Time</span>
+              <span class="vt-station__hint">Next {{ times_per_route | default: 2 }}</span>
             </div>
           {% endif %}
           {% for row in rows limit: max_per_col %}
-            {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--compact", show_stop: show_stop_sub %}
+            {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--compact", show_stop: show_stop_sub, max_times: 3, stack_four: false %}
           {% endfor %}
         </div>
         <div class="vt-col">
           {% if stop_count == 1 %}
             <div class="vt-station__header">
               <span class="vt-station__name">{{ stops.first.name }}</span>
-              <span class="vt-station__hint">Next 2</span>
+              <span class="vt-station__hint">{% if rt_only %}Real Time{% else %}Times{% endif %}</span>
             </div>
           {% endif %}
           {% for row in rows offset: max_per_col limit: max_per_col %}
-            {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--compact", show_stop: show_stop_sub %}
+            {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--compact", show_stop: show_stop_sub, max_times: 3, stack_four: false %}
           {% endfor %}
         </div>
       </div>

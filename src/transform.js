@@ -278,6 +278,7 @@ function run(input) {
   const realtimeOnly = toBool(custom.realtime_only, true);
   const minWalk = Math.max(0, parseInt(custom.min_walk_minutes ?? 1, 10) || 0);
   const timeDisplay = custom.time_display || 'clock';
+  const timesPerRoute = Math.min(4, Math.max(1, parseInt(custom.times_per_route ?? 2, 10) || 2));
   const widgetTitle = (custom.widget_title || 'Vienna Transit').trim() || 'Vienna Transit';
 
   const lineFilterSet = new Set(
@@ -498,24 +499,24 @@ function run(input) {
     for (const r of sortedRoutes) {
       // Sort chronologically and deduplicate identical clock times
       r.deps.sort((x, y) => x.m - y.m);
-      const nextTwo = [];
+      const nextTimes = [];
       const seenTimes = new Set();
       for (const dep of r.deps) {
         if (seenTimes.has(dep.t)) continue;
         seenTimes.add(dep.t);
         const entry = { t: dep.t, m: dep.m };
         if (dep.d > 0) entry.d = dep.d;
-        nextTwo.push(entry);
-        if (nextTwo.length === 2) break;
+        if (!dep.rt) entry.s = 1;
+        nextTimes.push(entry);
+        if (nextTimes.length === timesPerRoute) break;
       }
-      if (nextTwo.length === 0) continue;
+      if (nextTimes.length === 0) continue;
 
       const item = {
         mode: r.mode,
         line: r.line,
         to: r.towards,
-        t1: nextTwo[0],
-        t2: nextTwo[1] || null,
+        ts: nextTimes,
       };
       routeItems.push(item);
       rows.push({
@@ -545,9 +546,9 @@ function run(input) {
   }
 
   // Balance stops across left & right Full Screen columns using visual unit budget
-  // (each station header = 1 unit, each route row = 1 unit; max 11 units per column -> 1 header + 10 routes OR 2 headers + 9 routes with zero clipping at 800x480).
+  // (each station header = 1 unit, each route row = 1 unit; stacked 4-time rows use a tighter row cap so nothing clips).
   // Annotate each stop with `col: "L" | "R"` in-place (avoids duplicating payload bytes!).
-  const MAX_COL_UNITS = 11;
+  const MAX_COL_UNITS = timesPerRoute >= 4 ? 9 : 11;
   let balancedStops = trimmedStops;
   if (trimmedStops.length >= 2) {
     let leftUnits = 0;
@@ -592,6 +593,7 @@ function run(input) {
       title: widgetTitle,
       updated: updatedHHMM,
       time_display: timeDisplay,
+      times_per_route: timesPerRoute,
       rt_only: realtimeOnly,
       stop_count: balancedStops.length,
       route_count: trimmedRows.length,

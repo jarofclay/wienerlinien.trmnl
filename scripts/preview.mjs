@@ -394,6 +394,7 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
   const curSb = queryState.sb ?? '1290201';
   const curLines = queryState.lines ?? '';
   const curTime = queryState.time_display ?? 'clock';
+  const curTimesPerRoute = String(queryState.times_per_route ?? '2');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -649,6 +650,14 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
           <option value="minutes" ${curTime === 'minutes' ? 'selected' : ''}>Minutes (3')</option>
         </select>
       </label>
+      <label>
+        Times / Route
+        <select name="times_per_route">
+          <option value="2" ${curTimesPerRoute === '2' ? 'selected' : ''}>2 (5-min refresh)</option>
+          <option value="3" ${curTimesPerRoute === '3' ? 'selected' : ''}>3 (15-min refresh)</option>
+          <option value="4" ${curTimesPerRoute === '4' ? 'selected' : ''}>4 (15-min refresh)</option>
+        </select>
+      </label>
       <button type="submit">Fetch Live Data</button>
     </form>
   </div>
@@ -747,19 +756,22 @@ const server = http.createServer(async (req, res) => {
     const sb = urlObj.searchParams.has('sb') ? urlObj.searchParams.get('sb') : '1290201';
     const lines = urlObj.searchParams.get('lines') || '';
     const timeDisplay = urlObj.searchParams.get('time_display') || 'clock';
+    const timesPerRoute = urlObj.searchParams.get('times_per_route') || '2';
 
     if (preset === 'live') {
       rawInput = await fetchLivePayloads(wl, sb, {
         line_filter: lines,
         time_display: timeDisplay,
+        times_per_route: timesPerRoute,
       });
-      label = `LIVE APIs (WL: ${wl || 'none'}${sb ? ` | S-Bahn: ${sb}` : ''}${lines ? ` | Filter: ${lines}` : ''})`;
+      label = `LIVE APIs (WL: ${wl || 'none'}${sb ? ` | S-Bahn: ${sb}` : ''}${lines ? ` | Filter: ${lines}` : ''} | ${timesPerRoute} times/route)`;
     } else {
       rawInput = getFixturePreset(preset);
-      label = `Fixture (${preset})`;
+      rawInput.trmnl.plugin_settings.custom_fields_values.times_per_route = timesPerRoute;
+      label = `Fixture (${preset}, ${timesPerRoute} times/route)`;
     }
 
-    const html = buildPreviewHtml(rawInput, label, { wl, sb, lines, time_display: timeDisplay });
+    const html = buildPreviewHtml(rawInput, label, { wl, sb, lines, time_display: timeDisplay, times_per_route: timesPerRoute });
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(html);
   } catch (err) {

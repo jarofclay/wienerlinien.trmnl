@@ -88,13 +88,27 @@ custom_fields:
     field_type: select
     name: Time Format
     description: >-
-      Clock times (14:12 · 14:20) stay accurate on a 5-minute refresh screen;
+      Clock times (14:12 · 14:20) stay accurate on a 5- or 15-minute refresh screen;
       Countdown shows minutes from the last refresh.
     options:
       - clock
       - clock_and_min
       - minutes
     default: clock
+
+  - keyname: times_per_route
+    field_type: select
+    name: Departures Per Route
+    description: >-
+      How many upcoming departure times to show for each line & direction.
+      Use 2 for 5-minute refresh (TRMNL+) or 3-4 for 15-minute refresh (Free plan)
+      so departures stay catchable across the entire refresh window.
+    options:
+      - '2'
+      - '3'
+      - '4'
+    default: '2'
+    optional: true
 
   - keyname: widget_title
     field_type: string

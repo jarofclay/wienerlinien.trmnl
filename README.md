@@ -13,7 +13,7 @@ The existing Vienna metro plugin on TRMNL only queries a single Wiener Linien `s
 | **U-Bahn, Bus & Tram (both ways)** | Polls the official keyless **Wiener Linien OGD Realtime API** using 8-digit **DIVA** station IDs (which return every platform and both directions automatically) or individual RBL `stopId`s. |
 | **S-Bahn (both ways)** | Polls **ÖBB Scotty Live Ticker** (`productsFilter=0000010000`) using ÖBB **EVA** station IDs for live S-Bahn departures, delays (`+5`), and automatic cancellation filtering (`Ausfall`). |
 | **Real-Time Only (not scheduled)** | Filters strictly to `timeReal` (Wiener Linien) and live-monitored trains (ÖBB), hiding static-only timetable fallbacks by default. |
-| **Built for 5-Minute Refresh** | Displays actual **clock times** (`14:11 · 14:21`) with a configurable walk-time buffer (`min_walk_minutes`) so both times remain accurate and catchable between refreshes. |
+| **Built for 5- or 15-Minute Refresh** | Displays actual **clock times** (`14:11 · 14:21`) with a configurable `times_per_route` (`2` for 5-min TRMNL+ refresh, `3` or `4` for 15-min Free refresh) and walk-time buffer (`min_walk_minutes`) so departures stay accurate and catchable across the entire refresh window. |
 | **Multi-Stop & Co-Located Merging** | Add several stops (comma-separated). Co-located Wiener Linien & ÖBB hubs (e.g., `Praterstern S U` + `Wien Praterstern Bahnhof`) merge automatically under one station header. |
 | **All 4 TRMNL Layouts** | Crisp 1-bit/2-bit e-ink designs for `full`, `half_horizontal`, `half_vertical`, and `quadrant`, with custom inline SVG icons for **U-Bahn**, **S-Bahn**, **Bus**, and **Tram**. |
 
@@ -94,21 +94,26 @@ chmod +x bin/trmnlp
 
 ---
 
-## Deploying to Your TRMNL & Publishing to the Plugin Marketplace
+## Deploying to TRMNL & Connecting via GitHub Sync
 
-### 1. Build the TRMNL Plugin Archive
+### Option 1: TRMNL GitHub Sync (Recommended — Auto-Updates from GitHub)
+This repository uses TRMNL's standard `src/` folder layout (`src/settings.yml`, `src/transform.js`, `src/*.liquid`), so it connects cleanly to TRMNL's native **GitHub Sync** (`trmnl-sync` GitHub App):
+
+1. Push this repository to GitHub (public or private).
+2. In [usetrmnl.com](https://usetrmnl.com), open **Plugins → Private Plugin** (create a new Private Plugin or open your existing one).
+3. In the plugin's settings, enable **GitHub Sync**, authorize the **TRMNL Sync** GitHub App for this repository, and select your `main` branch.
+4. From then on, every push to `main` automatically syncs `src/` updates into your TRMNL Private Plugin (and edits made in TRMNL's web editor can sync back to GitHub).
+
+### Option 2: Manual ZIP Import
 ```bash
 npm run package
 # Creates dist/vienna-transit-trmnl.zip (flat archive as required by TRMNL)
 ```
+1. Sign in to [usetrmnl.com](https://usetrmnl.com) and go to **Plugins → Private Plugin → Import ZIP**.
+2. Upload `dist/vienna-transit-trmnl.zip`.
+3. Enter your **Wiener Linien Stops (DIVA/Stop IDs)** and optional **S-Bahn Stations (ÖBB EVA IDs)**, pick **Departures Per Route** (`2` for 5-min TRMNL+ refresh, `3` or `4` for 15-min Free refresh), and click **Force Refresh**.
 
-### 2. Import as a Private Plugin (for Your TRMNL Screen)
-1. Sign in to [usetrmnl.com](https://usetrmnl.com) and go to **Plugins → Private Plugin**.
-2. Click **Import** (or **New Private Plugin → Import ZIP**) and upload `dist/vienna-transit-trmnl.zip`.
-3. In the plugin settings, enter your **Wiener Linien Stops (DIVA/Stop IDs)** and optional **S-Bahn Stations (ÖBB EVA IDs)**, choose your modes/line filter, and set your refresh interval to **5 minutes** (TRMNL+) or **15 minutes** (Standard).
-4. Click **Force Refresh** and verify the rendered preview on your TRMNL dashboard & device.
-
-### 3. Publish to the TRMNL Recipe Marketplace (for Everyone in Vienna)
-1. Open your working Private Plugin in the TRMNL dashboard.
-2. Click **Publish as a Recipe** (TRMNL's **Chef** linter will validate `settings.yml`, `transform.js`, and all four `.liquid` layouts).
-3. Add a brief description + example DIVA/EVA IDs and submit for review. Once approved, any Vienna user can install it in one click from the TRMNL Marketplace.
+### Publishing to the TRMNL Recipe Marketplace (for Everyone in Vienna)
+1. Open your synced Private Plugin in the TRMNL dashboard.
+2. Click **Publish as a Recipe** — TRMNL's **Chef** linter validates `src/settings.yml`, `src/transform.js`, and all four `.liquid` layouts.
+3. Add a brief description and submit for review. Once approved, any Vienna user can install it in one click from the TRMNL Marketplace.
