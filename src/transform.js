@@ -261,6 +261,25 @@ function diffMinutesFromDateClock(dateStr, clockStr, nowParts) {
 }
 
 function run(input) {
+  try {
+    return runInternal(input);
+  } catch (err) {
+    return {
+      title: 'Vienna Transit',
+      updated: '--:--',
+      time_display: 'clock',
+      times_per_route: 2,
+      rt_only: true,
+      stop_count: 0,
+      route_count: 0,
+      stops: [],
+      rows: [],
+      empty_message: `Transform error: ${err && err.message ? err.message : String(err)}`,
+    };
+  }
+}
+
+function runInternal(input) {
   const safeInput = input || {};
   const custom =
     (safeInput.trmnl &&
@@ -589,18 +608,16 @@ function run(input) {
   }
 
   return {
-    data: {
-      title: widgetTitle,
-      updated: updatedHHMM,
-      time_display: timeDisplay,
-      times_per_route: timesPerRoute,
-      rt_only: realtimeOnly,
-      stop_count: balancedStops.length,
-      route_count: trimmedRows.length,
-      stops: balancedStops,
-      rows: compactRows,
-      empty_message: statusMessage,
-    },
+    title: widgetTitle,
+    updated: updatedHHMM,
+    time_display: timeDisplay,
+    times_per_route: timesPerRoute,
+    rt_only: realtimeOnly,
+    stop_count: balancedStops.length,
+    route_count: trimmedRows.length,
+    stops: balancedStops,
+    rows: compactRows,
+    empty_message: statusMessage,
   };
 }
 

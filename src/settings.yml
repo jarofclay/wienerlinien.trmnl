@@ -17,24 +17,16 @@ custom_fields:
   - keyname: wiener_linien_stops
     field_type: string
     name: Wiener Linien Stops (DIVA or Stop IDs)
-    description: >-
-      Comma-separated 8-digit DIVA station IDs (returns ALL platforms & both directions for U-Bahn, Bus & Tram)
-      or 1-5 digit RBL stop IDs for specific platforms.
-    help_text: >-
-      Examples: 60201040 (Praterstern), 60200188 (Burggasse-Stadthalle).
-      Run `npm run find-stop -- "Station Name"` to look up any stop in Vienna.
+    description: Comma-separated 8-digit DIVA codes (both ways) or RBL stop IDs.
+    help_text: 'Examples: 60201040 (Praterstern), 60200188 (Burggasse-Stadthalle).'
     default: '60201040'
     optional: true
 
   - keyname: sbahn_stops
     field_type: string
     name: S-Bahn Stations (ÖBB EVA IDs)
-    description: >-
-      Optional comma-separated ÖBB station EVA IDs for real-time S-Bahn departures in both directions.
-      Stations sharing the same name are merged automatically. Leave blank if not needed.
-    help_text: >-
-      Examples: 1290201 (Wien Praterstern), 1290401 (Wien Hbf).
-      Run `npm run find-stop -- "Wien Mitte"` to look up any station EVA ID.
+    description: Optional comma-separated ÖBB EVA IDs for live S-Bahn departures.
+    help_text: 'Examples: 1290201 (Wien Praterstern), 1290401 (Wien Hbf). Leave blank if unused.'
     default: ''
     optional: true
 
@@ -59,40 +51,33 @@ custom_fields:
   - keyname: include_tram
     field_type: boolean
     name: Show Tram (Straßenbahn)
-    description: Include Vienna tram / Straßenbahn lines (e.g. D, O, 5, 18, 62).
+    description: Include Vienna tram / Straßenbahn lines.
     default: true
 
   - keyname: line_filter
     field_type: string
     name: Filter Specific Lines (optional)
-    description: >-
-      Comma-separated line names to display (e.g. U1, 5B, 13A, S2, S7).
-      Leave empty to show all lines at your selected stops.
+    description: Comma-separated lines to keep (e.g. U1, 5B, 13A, S2). Blank shows all.
     default: ''
     optional: true
 
   - keyname: min_walk_minutes
     field_type: number
     name: Minimum Walk Time (minutes)
-    description: >-
-      Skip departures leaving sooner than this many minutes so the next shown
-      real times stay catchable between e-ink refreshes.
+    description: Skip departures leaving sooner than this many minutes.
     default: 1
     optional: true
 
   - keyname: realtime_only
     field_type: boolean
     name: Real-Time Departures Only
-    description: >-
-      Only display live tracked departures (excludes scheduled-only timetable fallback).
+    description: Hide scheduled-only timetable fallbacks.
     default: true
 
   - keyname: time_display
     field_type: select
     name: Time Format
-    description: >-
-      Clock times (14:12 · 14:20) stay accurate on a 5- or 15-minute refresh screen;
-      Countdown shows minutes from the last refresh.
+    description: Clock times (14:12) stay accurate between e-ink refreshes.
     options:
       - clock
       - clock_and_min
@@ -102,10 +87,7 @@ custom_fields:
   - keyname: times_per_route
     field_type: select
     name: Departures Per Route
-    description: >-
-      How many upcoming departure times to show for each line & direction.
-      Use 2 for 5-minute refresh (TRMNL+) or 3-4 for 15-minute refresh (Free plan)
-      so departures stay catchable across the entire refresh window.
+    description: Times shown per line (2 for 5-min refresh, 3-4 for 15-min).
     options:
       - '2'
       - '3'
@@ -120,5 +102,5 @@ custom_fields:
     default: Vienna Transit
     optional: true
 name: Wiener Linien
-description: Real-time Vienna U-Bahn, Bus, S-Bahn, and Tram departures in both directions across multiple stops.
+description: Live Vienna transit departures
 refresh_interval: 15

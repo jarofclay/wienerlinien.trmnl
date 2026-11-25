@@ -40,8 +40,7 @@ test('normalizes and merges Wiener Linien & ÖBB station names', () => {
 });
 
 test('merges multi-URL Wiener Linien + ÖBB payloads and shows both directions', () => {
-  const out = run(sample);
-  const d = out.data;
+  const d = run(sample);
 
   assert.equal(d.title, 'Vienna Transit');
   assert.equal(d.updated, '14:08');
@@ -86,23 +85,23 @@ test('merges multi-URL Wiener Linien + ÖBB payloads and shows both directions',
 test('supports times_per_route = 3 and 4 for 15-minute Free TRMNL refresh', () => {
   const clone = structuredClone(sample);
   clone.trmnl.plugin_settings.custom_fields_values.times_per_route = '4';
-  const out = run(clone);
-  assert.equal(out.data.times_per_route, 4);
+  const d = run(clone);
+  assert.equal(d.times_per_route, 4);
 
-  const u1Leo = out.data.stops[0].routes.find((r) => r.line === 'U1' && r.to === 'Leopoldau');
+  const u1Leo = d.stops[0].routes.find((r) => r.line === 'U1' && r.to === 'Leopoldau');
   assert.deepEqual(
     u1Leo.ts.map((x) => x.t),
     ['14:11', '14:16', '14:21', '14:26']
   );
 
-  const bytes = Buffer.byteLength(JSON.stringify(out), 'utf8');
+  const bytes = Buffer.byteLength(JSON.stringify(d), 'utf8');
   assert.ok(bytes < 5000, `Expected payload < 5000 bytes with 4 times/route, got ${bytes}`);
   console.log(`        (Payload size with times_per_route=4: ${bytes} bytes)`);
 });
 
 test('skips cancelled S-Bahn trains and applies real-time delay clock', () => {
-  const out = run(sample);
-  const hbfRoutes = out.data.stops[1].routes;
+  const d = run(sample);
+  const hbfRoutes = d.stops[1].routes;
 
   // S80 -> Leobersdorf had status "Ausfall", so it must be excluded
   assert.equal(hbfRoutes.some((r) => r.to === 'Leobersdorf'), false);
@@ -115,8 +114,8 @@ test('skips cancelled S-Bahn trains and applies real-time delay clock', () => {
 });
 
 test('applies minimum walk time buffer to avoid uncatchable 0-min departures', () => {
-  const out = run(sample);
-  const praterRoutes = out.data.stops[0].routes;
+  const d = run(sample);
+  const praterRoutes = d.stops[0].routes;
   // U1 -> Oberlaa had a 0-min departure at 14:08; with min_walk_minutes=1, ts[0] must be 14:12 (+2 delay)
   const u1Oberlaa = praterRoutes.find((r) => r.line === 'U1' && r.to === 'Oberlaa');
   assert.equal(u1Oberlaa.ts[0].t, '14:12');
@@ -157,19 +156,19 @@ test('excludes scheduled-only Wiener Linien departures when realtime_only is tru
   };
 
   const rtOut = run(schedInput);
-  assert.equal(rtOut.data.rows.length, 1);
-  assert.equal(rtOut.data.rows[0].ts.length, 1);
-  assert.equal(rtOut.data.rows[0].ts[0].t, '14:23');
-  assert.equal(rtOut.data.rows[0].ts[0].s, undefined);
+  assert.equal(rtOut.rows.length, 1);
+  assert.equal(rtOut.rows[0].ts.length, 1);
+  assert.equal(rtOut.rows[0].ts[0].t, '14:23');
+  assert.equal(rtOut.rows[0].ts[0].s, undefined);
 
   // When realtime_only is false, scheduled-only departure is included and tagged with s: 1
   schedInput.trmnl.plugin_settings.custom_fields_values.realtime_only = false;
   const allOut = run(schedInput);
-  assert.equal(allOut.data.rows[0].ts.length, 2);
-  assert.equal(allOut.data.rows[0].ts[0].t, '14:15');
-  assert.equal(allOut.data.rows[0].ts[0].s, 1);
-  assert.equal(allOut.data.rows[0].ts[1].t, '14:23');
-  assert.equal(allOut.data.rows[0].ts[1].s, undefined);
+  assert.equal(allOut.rows[0].ts.length, 2);
+  assert.equal(allOut.rows[0].ts[0].t, '14:15');
+  assert.equal(allOut.rows[0].ts[0].s, 1);
+  assert.equal(allOut.rows[0].ts[1].t, '14:23');
+  assert.equal(allOut.rows[0].ts[1].s, undefined);
 });
 
 test('handles single-URL input, tram toggle, and line_filter', () => {
@@ -186,8 +185,8 @@ test('handles single-URL input, tram toggle, and line_filter', () => {
       },
     },
   };
-  const out = run(single);
-  const lines = out.data.rows.map((r) => `${r.line}:${r.to}`);
+  const d = run(single);
+  const lines = d.rows.map((r) => `${r.line}:${r.to}`);
   assert.deepEqual(lines, [
     'U1:Leopoldau',
     'U1:Oberlaa',
@@ -198,16 +197,16 @@ test('handles single-URL input, tram toggle, and line_filter', () => {
 });
 
 test('keeps transformed payload well under TRMNL 5 KB limit', () => {
-  const out = run(sample);
-  const bytes = Buffer.byteLength(JSON.stringify(out), 'utf8');
+  const d = run(sample);
+  const bytes = Buffer.byteLength(JSON.stringify(d), 'utf8');
   assert.ok(bytes < 5000, `Expected payload < 5000 bytes, got ${bytes}`);
   console.log(`        (Transformed payload size: ${bytes} bytes)`);
 });
 
 test('handles empty or unconfigured input gracefully', () => {
-  const out = run({});
-  assert.equal(out.data.rows.length, 0);
-  assert.ok(out.data.empty_message.includes('DIVA'));
+  const d = run({});
+  assert.equal(d.rows.length, 0);
+  assert.ok(d.empty_message.includes('DIVA'));
 });
 
 if (!process.exitCode) {

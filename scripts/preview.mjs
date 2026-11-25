@@ -380,9 +380,8 @@ async function fetchLivePayloads(wlStopsStr, sbStopsStr, overrides = {}) {
 // ---------------------------------------------------------------------------
 
 function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
-  const transformed = runTransform(rawInput);
-  const data = transformed.data;
-  const payloadBytes = Buffer.byteLength(JSON.stringify(transformed), 'utf8');
+  const data = runTransform(rawInput);
+  const payloadBytes = Buffer.byteLength(JSON.stringify(data), 'utf8');
 
   const shared = fs.readFileSync(path.join(SRC_DIR, 'shared.liquid'), 'utf8');
   const fullHtml = renderLiquid(shared, fs.readFileSync(path.join(SRC_DIR, 'full.liquid'), 'utf8'), data);
