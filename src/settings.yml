@@ -75,6 +75,6 @@ custom_fields:
   name: Widget Title
   description: Header title shown in the TRMNL title bar.
   default: Vienna Transit
-name: Vienna Transit Departures
+name: Wiener Linien
 description: Routes
 refresh_interval: 15
