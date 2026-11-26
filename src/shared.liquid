@@ -5,26 +5,19 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    color: #000000;
-    font-family: inherit;
     overflow: hidden;
   }
 
-  .vt-grid {
-    display: grid;
-    gap: 14px;
+  .vt-cols {
     width: 100%;
-    height: 100%;
-    align-content: start;
-  }
-
-  .vt-grid--1 {
-    grid-template-columns: 1fr;
-  }
-
-  .vt-grid--2 {
-    grid-template-columns: 1fr 1fr;
+    align-items: start;
     column-gap: 18px;
+    row-gap: 10px;
+  }
+
+  .screen--lg .vt-cols {
+    column-gap: 28px;
+    row-gap: 16px;
   }
 
   .vt-col {
@@ -33,13 +26,21 @@
     min-width: 0;
   }
 
-  .vt-grid--2 .vt-col:nth-child(2) {
+  .screen:not(.screen--portrait) .vt-cols--split .vt-col:nth-child(2) {
     border-left: 2px solid #000000;
     padding-left: 16px;
   }
 
+  .screen--lg:not(.screen--portrait) .vt-cols--split .vt-col:nth-child(2) {
+    padding-left: 24px;
+  }
+
   .vt-station {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+  }
+
+  .screen--lg .vt-station {
+    margin-bottom: 14px;
   }
 
   .vt-station:last-child {
@@ -50,47 +51,56 @@
     display: flex;
     align-items: baseline;
     justify-content: space-between;
+    gap: 8px;
     border-bottom: 2px solid #000000;
     padding-bottom: 3px;
-    margin-bottom: 4px;
+    margin-bottom: 3px;
+  }
+
+  .screen--lg .vt-station__header {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
   }
 
   .vt-station__name {
-    font-size: 16px;
-    font-weight: 800;
-    letter-spacing: 0.02em;
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .vt-station__hint {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.04em;
     text-transform: uppercase;
+    white-space: nowrap;
     flex-shrink: 0;
-    margin-left: 8px;
   }
 
   .vt-row {
     display: grid;
-    grid-template-columns: 24px 48px minmax(0, 1fr) auto;
+    grid-template-columns: 22px 46px minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 8px;
     padding: 5px 0;
     border-bottom: 1px solid #000000;
   }
 
-  .vt-row:last-child {
-    border-bottom: none;
+  .screen--lg .vt-row {
+    grid-template-columns: 28px 58px minmax(0, 1fr) auto;
+    column-gap: 12px;
+    padding: 8px 0;
   }
 
   .vt-row--large {
-    grid-template-columns: 28px 56px minmax(0, 1fr) auto;
+    grid-template-columns: 26px 56px minmax(0, 1fr) auto;
     column-gap: 10px;
-    padding: 9px 0;
+    padding: 8px 0;
+  }
+
+  .screen--lg .vt-row--large {
+    grid-template-columns: 34px 72px minmax(0, 1fr) auto;
+    column-gap: 14px;
+    padding: 12px 0;
   }
 
   .vt-row--compact {
@@ -99,24 +109,90 @@
     padding: 4px 0;
   }
 
+  .screen--lg .vt-row--compact {
+    grid-template-columns: 26px 54px minmax(0, 1fr) auto;
+    column-gap: 10px;
+    padding: 7px 0;
+  }
+
   .vt-row--quad {
     grid-template-columns: 18px 38px minmax(0, 1fr) auto;
     column-gap: 5px;
     padding: 3px 0;
   }
 
+  .screen--lg .vt-row--quad {
+    grid-template-columns: 24px 50px minmax(0, 1fr) auto;
+    column-gap: 8px;
+    padding: 6px 0;
+  }
+
+  .vt-row--stacked {
+    grid-template-columns: 22px 46px minmax(0, 1fr);
+    row-gap: 3px;
+  }
+
+  .screen--lg .vt-row--stacked {
+    grid-template-columns: 28px 58px minmax(0, 1fr);
+    row-gap: 4px;
+  }
+
+  .vt-row--compact.vt-row--stacked {
+    grid-template-columns: 20px 42px minmax(0, 1fr);
+    row-gap: 2px;
+  }
+
+  .screen--lg .vt-row--compact.vt-row--stacked {
+    grid-template-columns: 26px 54px minmax(0, 1fr);
+    row-gap: 3px;
+  }
+
+  .vt-row--quad.vt-row--stacked {
+    grid-template-columns: 18px 38px minmax(0, 1fr);
+    row-gap: 2px;
+  }
+
+  .screen--lg .vt-row--quad.vt-row--stacked {
+    grid-template-columns: 24px 50px minmax(0, 1fr);
+    row-gap: 3px;
+  }
+
+  .vt-row--stacked .vt-times--ownline {
+    grid-column: 2 / -1;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+
+  .vt-station > .vt-row:last-child,
+  .vt-col > .vt-row:last-child,
+  .vt-station > .hidden:last-child .vt-row,
+  .vt-col > .hidden:last-child .vt-row {
+    border-bottom: none;
+  }
+
   .vt-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
     flex-shrink: 0;
   }
 
-  .vt-row--large .vt-icon {
+  .screen--lg .vt-icon {
     width: 28px;
     height: 28px;
+  }
+
+  .vt-row--large .vt-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .screen--lg .vt-row--large .vt-icon {
+    width: 34px;
+    height: 34px;
   }
 
   .vt-row--compact .vt-icon {
@@ -124,9 +200,19 @@
     height: 20px;
   }
 
+  .screen--lg .vt-row--compact .vt-icon {
+    width: 26px;
+    height: 26px;
+  }
+
   .vt-row--quad .vt-icon {
     width: 18px;
     height: 18px;
+  }
+
+  .screen--lg .vt-row--quad .vt-icon {
+    width: 24px;
+    height: 24px;
   }
 
   .vt-icon svg {
@@ -139,92 +225,42 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-weight: 800;
-    font-size: 14px;
-    line-height: 1;
-    padding: 4px 4px;
-    border-radius: 4px;
-    border: 2px solid #000000;
-    box-sizing: border-box;
+    width: 100%;
     text-align: center;
     white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .vt-row--large .vt-line {
-    font-size: 17px;
-    padding: 5px 6px;
-  }
-
-  .vt-row--compact .vt-line {
-    font-size: 12px;
-    padding: 3px 3px;
-    border-width: 1.5px;
-  }
-
-  .vt-row--quad .vt-line {
-    font-size: 11px;
-    padding: 2px 2px;
-    border-width: 1.5px;
-  }
-
-  .vt-line--metro {
-    background: #000000;
-    color: #ffffff;
+    box-sizing: border-box;
+    padding: 2px 4px;
+    border-radius: 4px;
   }
 
   .vt-line--sbahn {
-    background: #000000;
-    color: #ffffff;
     border-radius: 999px;
   }
 
-  .vt-line--bus {
-    background: #ffffff;
-    color: #000000;
-    border-radius: 4px;
-  }
-
   .vt-line--tram {
-    background: #ffffff;
-    color: #000000;
-    border-radius: 4px;
     box-shadow: inset 0 0 0 1px #ffffff, inset 0 0 0 2.5px #000000;
   }
 
   .vt-dest {
     min-width: 0;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    line-height: 1.15;
+    gap: 1px;
   }
 
   .vt-dest__to {
-    font-size: 15px;
-    font-weight: 600;
+    display: block;
+    max-width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 
-  .vt-row--large .vt-dest__to {
-    font-size: 19px;
-    font-weight: 700;
-  }
-
-  .vt-row--compact .vt-dest__to {
-    font-size: 13px;
-  }
-
-  .vt-row--quad .vt-dest__to {
-    font-size: 12px;
-  }
-
   .vt-dest__stop {
-    font-size: 10px;
-    font-weight: 700;
+    display: block;
+    max-width: 100%;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -236,108 +272,26 @@
     justify-content: flex-end;
     gap: 5px;
     white-space: nowrap;
-    font-variant-numeric: tabular-nums;
   }
 
-  .vt-times--stack {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 2px;
-    line-height: 1.05;
-  }
-
-  .vt-times__line {
-    display: inline-flex;
-    align-items: baseline;
-    justify-content: flex-end;
-    gap: 5px;
-  }
-
-  .vt-times__line--sub {
-    opacity: 1;
-  }
-
-  .vt-row--large .vt-times {
-    gap: 10px;
-  }
-
-  .vt-row--compact .vt-times,
-  .vt-row--quad .vt-times {
-    gap: 4px;
+  .screen--lg .vt-times {
+    gap: 8px;
   }
 
   .vt-t {
     display: inline-flex;
     align-items: baseline;
-    gap: 2px;
-  }
-
-  .vt-t--primary {
-    font-size: 16px;
-    font-weight: 800;
-  }
-
-  .vt-t--secondary {
-    font-size: 13px;
-    font-weight: 600;
+    gap: 3px;
   }
 
   .vt-t--sched {
     font-style: italic;
-    font-weight: 500;
-  }
-
-  .vt-row--large .vt-t--primary {
-    font-size: 22px;
-  }
-
-  .vt-row--large .vt-t--secondary {
-    font-size: 17px;
-  }
-
-  .vt-row--compact .vt-t--primary {
-    font-size: 14px;
-  }
-
-  .vt-row--compact .vt-t--secondary {
-    font-size: 11.5px;
-  }
-
-  .vt-row--quad .vt-t--primary {
-    font-size: 13px;
-  }
-
-  .vt-row--quad .vt-t--secondary {
-    font-size: 11px;
-  }
-
-  .vt-t__sep {
-    font-weight: 400;
-    font-size: 12px;
-  }
-
-  .vt-t__min {
-    font-size: 0.72em;
-    font-weight: 600;
   }
 
   .vt-delay {
-    display: inline-block;
-    background: #000000;
-    color: #ffffff;
-    font-size: 10px;
-    font-weight: 800;
-    line-height: 1;
-    padding: 2px 3px;
+    padding: 1px 4px;
     border-radius: 3px;
     vertical-align: top;
-    margin-left: 1px;
-  }
-
-  .vt-row--quad .vt-delay {
-    font-size: 9px;
-    padding: 1px 2px;
   }
 
   .vt-empty {
@@ -348,18 +302,7 @@
     text-align: center;
     height: 100%;
     padding: 20px;
-    gap: 8px;
-  }
-
-  .vt-empty__title {
-    font-size: 18px;
-    font-weight: 800;
-  }
-
-  .vt-empty__body {
-    font-size: 13px;
-    max-width: 440px;
-    line-height: 1.4;
+    gap: 10px;
   }
 
   .vt-title-icon {
@@ -374,8 +317,7 @@
   .vt-live-pill {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    font-weight: 700;
+    gap: 5px;
   }
 
   .vt-live-dot {
@@ -421,16 +363,33 @@
 
 {% template dep_time %}
   {% if dep %}
-    <span class="vt-t {% if primary %}vt-t--primary{% else %}vt-t--secondary{% endif %}{% if dep.s %} vt-t--sched{% endif %}">
-      {% if time_display == "minutes" %}
-        <span>{% if dep.s %}~{% endif %}{{ dep.m }}&#8242;</span>
-      {% elsif time_display == "clock_and_min" %}
-        <span>{% if dep.s %}~{% endif %}{{ dep.t }}</span><span class="vt-t__min">({{ dep.m }}&#8242;)</span>
+    <span class="vt-t{% if dep.s %} vt-t--sched{% endif %}">
+      {% if primary %}
+        {% if density == "large" %}
+          {% assign t_cls = "value value--xsmall lg:value--small value--tnums" %}
+        {% elsif density == "quad" %}
+          {% assign t_cls = "label label--base lg:label--large value--tnums" %}
+        {% else %}
+          {% assign t_cls = "value value--xxsmall lg:value--xsmall value--tnums" %}
+        {% endif %}
       {% else %}
-        <span>{% if dep.s %}~{% endif %}{{ dep.t }}</span>
+        {% if density == "large" %}
+          {% assign t_cls = "label label--base lg:label--large value--tnums" %}
+        {% else %}
+          {% assign t_cls = "label label--small lg:label--base value--tnums" %}
+        {% endif %}
       {% endif %}
+      <span class="{{ t_cls }}">
+        {% if time_display == "minutes" %}
+          {% if dep.s %}~{% endif %}{{ dep.m }}&#8242;
+        {% elsif time_display == "clock_and_min" %}
+          {% if dep.s %}~{% endif %}{{ dep.t }} ({{ dep.m }}&#8242;)
+        {% else %}
+          {% if dep.s %}~{% endif %}{{ dep.t }}
+        {% endif %}
+      </span>
       {% if dep.d and dep.d > 0 %}
-        <span class="vt-delay">+{{ dep.d }}</span>
+        <span class="label label--small label--inverted vt-delay">+{{ dep.d }}</span>
       {% endif %}
     </span>
   {% endif %}
@@ -438,41 +397,62 @@
 
 {% template route_row %}
   {% assign lim = max_times | default: 4 %}
-  {% assign stack = stack_four | default: false %}
-  <div class="vt-row {{ size_class }}">
+  {% assign stack = stack_times | default: false %}
+  {% assign dens = density | default: "normal" %}
+  {% assign should_stack = false %}
+  {% if stack %}
+    {% if row.ts.size >= 3 and lim >= 3 %}
+      {% assign should_stack = true %}
+    {% elsif time_display == "clock_and_min" and row.ts.size >= 2 and lim >= 2 %}
+      {% assign should_stack = true %}
+    {% elsif row.ts.size >= 2 and lim >= 2 %}
+      {% if row.ts.first.d or row.ts.last.d %}
+        {% assign should_stack = true %}
+      {% endif %}
+    {% endif %}
+  {% endif %}
+
+  {% if dens == "large" %}
+    {% assign row_cls = "vt-row vt-row--large" %}
+    {% assign line_size = "label label--base lg:label--large" %}
+    {% assign dest_cls = "title title--base lg:title--large vt-dest__to" %}
+  {% elsif dens == "compact" %}
+    {% assign row_cls = "vt-row vt-row--compact" %}
+    {% assign line_size = "label label--small lg:label--base" %}
+    {% assign dest_cls = "label label--base lg:label--large vt-dest__to" %}
+  {% elsif dens == "quad" %}
+    {% assign row_cls = "vt-row vt-row--quad" %}
+    {% assign line_size = "label label--small lg:label--base" %}
+    {% assign dest_cls = "label label--small lg:label--base vt-dest__to" %}
+  {% else %}
+    {% assign row_cls = "vt-row" %}
+    {% assign line_size = "label label--small lg:label--base" %}
+    {% assign dest_cls = "title title--small lg:title--base vt-dest__to" %}
+  {% endif %}
+
+  {% if row.mode == "metro" or row.mode == "sbahn" %}
+    {% assign badge_variant = "label--inverted" %}
+  {% else %}
+    {% assign badge_variant = "label--outline" %}
+  {% endif %}
+
+  <div class="{{ row_cls }}{% if should_stack %} vt-row--stacked{% endif %}">
     <span class="vt-icon">
       {% render "mode_icon", mode: row.mode %}
     </span>
-    <span class="vt-line vt-line--{{ row.mode }}">{{ row.line }}</span>
+    <span class="{{ line_size }} {{ badge_variant }} vt-line vt-line--{{ row.mode }}">{{ row.line }}</span>
     <div class="vt-dest">
-      <span class="vt-dest__to">{{ row.to }}</span>
+      <span class="{{ dest_cls }}" data-clamp="1">{{ row.to }}</span>
       {% if show_stop and row.stop %}
-        <span class="vt-dest__stop">{{ row.stop }}</span>
+        <span class="description description--base lg:description--large vt-dest__stop" data-clamp="1">{{ row.stop }}</span>
       {% endif %}
     </div>
-    {% if stack and row.ts.size > 3 and lim >= 4 %}
-      <div class="vt-times vt-times--stack">
-        <div class="vt-times__line">
-          {% for dep in row.ts limit: 2 %}
-            {% if forloop.index > 1 %}<span class="vt-t__sep">&middot;</span>{% endif %}
-            {% render "dep_time", dep: dep, primary: forloop.first, time_display: time_display %}
-          {% endfor %}
-        </div>
-        <div class="vt-times__line vt-times__line--sub">
-          {% for dep in row.ts offset: 2 limit: 2 %}
-            {% if forloop.index > 1 %}<span class="vt-t__sep">&middot;</span>{% endif %}
-            {% render "dep_time", dep: dep, primary: false, time_display: time_display %}
-          {% endfor %}
-        </div>
-      </div>
-    {% else %}
-      <div class="vt-times">
-        {% for dep in row.ts limit: lim %}
-          {% if forloop.index > 1 %}<span class="vt-t__sep">&middot;</span>{% endif %}
-          {% render "dep_time", dep: dep, primary: forloop.first, time_display: time_display %}
-        {% endfor %}
-      </div>
-    {% endif %}
+    <div class="vt-times{% if should_stack %} vt-times--ownline{% endif %}">
+      {% for dep in row.ts limit: lim %}
+        {% if forloop.index > 1 %}<span class="label label--small lg:label--base">&middot;</span>{% endif %}
+        {% render "dep_time", dep: dep, primary: forloop.first, time_display: time_display, density: dens %}
+      {% endfor %}
+    </div>
   </div>
 {% endtemplate %}
 

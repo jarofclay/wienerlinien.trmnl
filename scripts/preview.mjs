@@ -65,6 +65,8 @@ function applyFilter(val, filterExpr, scope) {
       return (Number(val) || 0) + (Number(arg) || 0);
     case 'minus':
       return (Number(val) || 0) - (Number(arg) || 0);
+    case 'times':
+      return (Number(val) || 0) * (Number(arg) || 1);
     case 'divided_by':
       return Math.floor((Number(val) || 0) / (Number(arg) || 1));
     case 'strip':
@@ -394,13 +396,49 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
   const curLines = queryState.lines ?? '';
   const curTime = queryState.time_display ?? 'clock';
   const curTimesPerRoute = String(queryState.times_per_route ?? '2');
+  const curDevice = queryState.device ?? 'og';
+
+  const deviceProfiles = {
+    og: {
+      label: 'TRMNL OG (800×480)',
+      screenClass: 'screen screen--og screen--md screen--1bit',
+      dims: {
+        full: [800, 480],
+        halfH: [800, 240],
+        halfV: [400, 480],
+        quad: [400, 240],
+      },
+    },
+    x_landscape: {
+      label: 'TRMNL X Landscape (1040×780 @ 1.8x)',
+      screenClass: 'screen screen--v2 screen--lg screen--4bit',
+      dims: {
+        full: [1040, 780],
+        halfH: [1040, 380],
+        halfV: [510, 780],
+        quad: [510, 380],
+      },
+    },
+    x_portrait: {
+      label: 'TRMNL X Portrait (780×1040 @ 1.8x)',
+      screenClass: 'screen screen--v2 screen--lg screen--portrait screen--4bit',
+      dims: {
+        full: [780, 1040],
+        halfH: [780, 510],
+        halfV: [380, 1040],
+        quad: [380, 510],
+      },
+    },
+  };
+  const dev = deviceProfiles[curDevice] || deviceProfiles.og;
 
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vienna Transit — TRMNL E-Ink Preview</title>
+  <title>Vienna Transit — TRMNL E-Ink Preview (${dev.label})</title>
+  <link rel="stylesheet" href="/trmnl.css" />
   <style>
     :root {
       --bg: #eceae4;
@@ -460,7 +498,7 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
       font-size: 12px;
       font-weight: 700;
     }
-    .controls a:hover {
+    .controls a:hover, .controls a.active {
       background: #111;
       color: #fff;
     }
@@ -505,13 +543,6 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
     .live-form button:hover {
       background: #333;
     }
-    .meta-pill {
-      font-size: 12px;
-      font-weight: 600;
-      background: #dfddd6;
-      padding: 6px 10px;
-      border-radius: 6px;
-    }
     .gallery {
       max-width: 1260px;
       margin: 0 auto;
@@ -546,70 +577,19 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
       align-self: flex-start;
       width: fit-content;
     }
-
-    /* Official TRMNL e-paper screen & Framework v2 primitives */
-    .screen {
+    .trmnl .screen {
       background: #ffffff;
       color: #000000;
-      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
-      -webkit-font-smoothing: none;
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
       border: 1px solid #000;
     }
-    .screen--full { width: 800px; height: 480px; }
-    .screen--half-h { width: 800px; height: 240px; }
-    .screen--half-v { width: 400px; height: 480px; }
-    .screen--quad { width: 400px; height: 240px; }
-
-    .view {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      padding: 14px 16px 10px;
-    }
-    .screen--quad .view,
-    .screen--half-h .view {
-      padding: 10px 14px 8px;
-    }
-    .layout {
-      flex: 1 1 auto;
-      min-height: 0;
-      display: flex;
-      width: 100%;
-      overflow: hidden;
-    }
-    .layout--col { flex-direction: column; }
-    .layout--top { justify-content: flex-start; }
-
-    .title_bar {
-      flex: 0 0 auto;
-      display: flex;
-      align-items: center;
-      height: 30px;
-      border-top: 2px solid #000000;
-      margin-top: 8px;
-      padding-top: 6px;
-      font-size: 13px;
-      line-height: 1;
-    }
-    .screen--quad .title_bar,
-    .screen--half-h .title_bar {
-      height: 24px;
-      margin-top: 5px;
-      padding-top: 4px;
-      font-size: 11px;
-    }
-    .title_bar .title {
-      font-weight: 800;
-      margin-right: auto;
-      letter-spacing: 0.01em;
-    }
-    .title_bar .instance {
-      font-weight: 600;
-      font-variant-numeric: tabular-nums;
+    .trmnl .screen--preview-full { width: ${dev.dims.full[0]}px !important; height: ${dev.dims.full[1]}px !important; }
+    .trmnl .screen--preview-half-h { width: ${dev.dims.halfH[0]}px !important; height: ${dev.dims.halfH[1]}px !important; }
+    .trmnl .screen--preview-half-v { width: ${dev.dims.halfV[0]}px !important; height: ${dev.dims.halfV[1]}px !important; }
+    .trmnl .screen--preview-quad { width: ${dev.dims.quad[0]}px !important; height: ${dev.dims.quad[1]}px !important; }
+    .trmnl .screen .view {
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
@@ -617,36 +597,36 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
   <div class="chrome">
     <div class="chrome-top">
       <div>
-        <h1>Vienna Transit Departures — TRMNL E-Ink Preview</h1>
+        <h1>Vienna Transit Departures — TRMNL E-Ink Preview (${dev.label})</h1>
         <p>Source: <strong>${modeLabel}</strong> &middot; Payload: <strong>${payloadBytes} bytes</strong> (TRMNL limit: 5,120 bytes) &middot; Routes: <strong>${data.route_count}</strong> across <strong>${data.stop_count}</strong> stop(s)</p>
       </div>
       <div class="controls">
-        <a href="/?preset=live&wl=60201040&sb=">Praterstern WL (Live)</a>
-        <a href="/?preset=live&wl=60201040&sb=1290201,1290401">Praterstern + Wien Hbf S-Bahn (Live)</a>
-        <a href="/?preset=live&wl=60201040,60200188&sb=1290201">Multi-Hub DIVAs (Live)</a>
-        <a href="/?preset=multi">Offline Fixture</a>
+        <a href="/?preset=live&wl=${encodeURIComponent(curWl)}&sb=${encodeURIComponent(curSb)}&lines=${encodeURIComponent(curLines)}&time_display=${curTime}&times_per_route=${curTimesPerRoute}&device=og" class="${curDevice === 'og' ? 'active' : ''}">OG (800×480)</a>
+        <a href="/?preset=live&wl=${encodeURIComponent(curWl)}&sb=${encodeURIComponent(curSb)}&lines=${encodeURIComponent(curLines)}&time_display=${curTime}&times_per_route=${curTimesPerRoute}&device=x_landscape" class="${curDevice === 'x_landscape' ? 'active' : ''}">TRMNL X Landscape</a>
+        <a href="/?preset=live&wl=${encodeURIComponent(curWl)}&sb=${encodeURIComponent(curSb)}&lines=${encodeURIComponent(curLines)}&time_display=${curTime}&times_per_route=${curTimesPerRoute}&device=x_portrait" class="${curDevice === 'x_portrait' ? 'active' : ''}">TRMNL X Portrait</a>
+        <a href="/?preset=multi&device=${curDevice}&times_per_route=${curTimesPerRoute}">Offline Fixture</a>
       </div>
     </div>
     <form class="live-form" method="GET" action="/">
       <input type="hidden" name="preset" value="live" />
       <label>
         Wiener Linien Stops (DIVA or RBL)
-        <input name="wl" value="${curWl}" style="width: 240px;" placeholder="60201040, 60200188" />
+        <input name="wl" value="${curWl}" style="width: 210px;" placeholder="60201040, 60200188" />
       </label>
       <label>
         S-Bahn EVA IDs (optional)
-        <input name="sb" value="${curSb}" style="width: 150px;" placeholder="1290201" />
+        <input name="sb" value="${curSb}" style="width: 140px;" placeholder="1290201" />
       </label>
       <label>
         Line Filter (optional)
-        <input name="lines" value="${curLines}" style="width: 180px;" placeholder="U1, 5B, S2" />
+        <input name="lines" value="${curLines}" style="width: 140px;" placeholder="U1, 5B, S2" />
       </label>
       <label>
         Time Format
         <select name="time_display">
           <option value="clock" ${curTime === 'clock' ? 'selected' : ''}>Clock (14:12)</option>
           <option value="clock_and_min" ${curTime === 'clock_and_min' ? 'selected' : ''}>Clock + Min</option>
-          <option value="minutes" ${curTime === 'minutes' ? 'selected' : ''}>Minutes (3')</option>
+          <option value="minutes" ${curTime === 'minutes' ? 'selected' : ''}>Minutes (6′)</option>
         </select>
       </label>
       <label>
@@ -657,37 +637,45 @@ function buildPreviewHtml(rawInput, modeLabel, queryState = {}) {
           <option value="4" ${curTimesPerRoute === '4' ? 'selected' : ''}>4 (15-min refresh)</option>
         </select>
       </label>
+      <label>
+        Device
+        <select name="device">
+          <option value="og" ${curDevice === 'og' ? 'selected' : ''}>OG (800×480)</option>
+          <option value="x_landscape" ${curDevice === 'x_landscape' ? 'selected' : ''}>TRMNL X Landscape</option>
+          <option value="x_portrait" ${curDevice === 'x_portrait' ? 'selected' : ''}>TRMNL X Portrait</option>
+        </select>
+      </label>
       <button type="submit">Fetch Live Data</button>
     </form>
   </div>
 
   <div class="gallery">
     <div class="frame-wrap">
-      <div class="frame-label">Full Screen &mdash; 800 &times; 480 px (full.liquid)</div>
+      <div class="frame-label">Full Screen &mdash; ${dev.dims.full[0]} &times; ${dev.dims.full[1]} px (full.liquid)</div>
       <div class="trmnl-bezel">
-        <div class="screen screen--full"><div class="view view--full">${fullHtml}</div></div>
+        <div class="trmnl"><div class="${dev.screenClass} screen--preview-full"><div class="view view--full">${fullHtml}</div></div></div>
       </div>
     </div>
 
     <div class="frame-wrap">
-      <div class="frame-label">Half Horizontal &mdash; 800 &times; 240 px (half_horizontal.liquid)</div>
+      <div class="frame-label">Half Horizontal &mdash; ${dev.dims.halfH[0]} &times; ${dev.dims.halfH[1]} px (half_horizontal.liquid)</div>
       <div class="trmnl-bezel">
-        <div class="screen screen--half-h"><div class="view view--half_horizontal">${halfHHtml}</div></div>
+        <div class="trmnl"><div class="${dev.screenClass} screen--preview-half-h"><div class="view view--half_horizontal">${halfHHtml}</div></div></div>
       </div>
     </div>
 
     <div class="row-group">
       <div class="frame-wrap">
-        <div class="frame-label">Half Vertical &mdash; 400 &times; 480 px (half_vertical.liquid)</div>
+        <div class="frame-label">Half Vertical &mdash; ${dev.dims.halfV[0]} &times; ${dev.dims.halfV[1]} px (half_vertical.liquid)</div>
         <div class="trmnl-bezel">
-          <div class="screen screen--half-v"><div class="view view--half_vertical">${halfVHtml}</div></div>
+          <div class="trmnl"><div class="${dev.screenClass} screen--preview-half-v"><div class="view view--half_vertical">${halfVHtml}</div></div></div>
         </div>
       </div>
 
       <div class="frame-wrap">
-        <div class="frame-label">Quadrant &mdash; 400 &times; 240 px (quadrant.liquid)</div>
+        <div class="frame-label">Quadrant &mdash; ${dev.dims.quad[0]} &times; ${dev.dims.quad[1]} px (quadrant.liquid)</div>
         <div class="trmnl-bezel">
-          <div class="screen screen--quad"><div class="view view--quadrant">${quadHtml}</div></div>
+          <div class="trmnl"><div class="${dev.screenClass} screen--preview-quad"><div class="view view--quadrant">${quadHtml}</div></div></div>
         </div>
       </div>
     </div>
@@ -744,9 +732,34 @@ if (staticIdx !== -1) {
   process.exit(0);
 }
 
+let cachedTrmnlCss = null;
+const cachedFonts = new Map();
+
 const server = http.createServer(async (req, res) => {
   try {
     const urlObj = new URL(req.url, `http://localhost:${port}`);
+    if (urlObj.pathname === '/trmnl.css') {
+      if (!cachedTrmnlCss) {
+        const cssRes = await fetchWithRetry('https://trmnl.com/css/latest/plugins.css', 2);
+        cachedTrmnlCss = await cssRes.text();
+      }
+      res.writeHead(200, { 'Content-Type': 'text/css; charset=utf-8', 'Cache-Control': 'public, max-age=3600' });
+      res.end(cachedTrmnlCss);
+      return;
+    }
+    if (urlObj.pathname.startsWith('/fonts/')) {
+      const fontPath = urlObj.pathname;
+      if (!cachedFonts.has(fontPath)) {
+        const fRes = await fetchWithRetry(`https://trmnl.com${fontPath}`, 2);
+        const buf = Buffer.from(await fRes.arrayBuffer());
+        const ct = fRes.headers.get('content-type') || 'application/octet-stream';
+        cachedFonts.set(fontPath, { buf, ct });
+      }
+      const { buf, ct } = cachedFonts.get(fontPath);
+      res.writeHead(200, { 'Content-Type': ct, 'Cache-Control': 'public, max-age=86400' });
+      res.end(buf);
+      return;
+    }
     const preset = urlObj.searchParams.get('preset') || initialPreset;
 
     let rawInput;
@@ -756,6 +769,7 @@ const server = http.createServer(async (req, res) => {
     const lines = urlObj.searchParams.get('lines') || '';
     const timeDisplay = urlObj.searchParams.get('time_display') || 'clock';
     const timesPerRoute = urlObj.searchParams.get('times_per_route') || '2';
+    const device = urlObj.searchParams.get('device') || 'og';
 
     if (preset === 'live') {
       rawInput = await fetchLivePayloads(wl, sb, {
@@ -767,10 +781,18 @@ const server = http.createServer(async (req, res) => {
     } else {
       rawInput = getFixturePreset(preset);
       rawInput.trmnl.plugin_settings.custom_fields_values.times_per_route = timesPerRoute;
+      rawInput.trmnl.plugin_settings.custom_fields_values.time_display = timeDisplay;
       label = `Fixture (${preset}, ${timesPerRoute} times/route)`;
     }
 
-    const html = buildPreviewHtml(rawInput, label, { wl, sb, lines, time_display: timeDisplay, times_per_route: timesPerRoute });
+    const html = buildPreviewHtml(rawInput, label, {
+      wl,
+      sb,
+      lines,
+      time_display: timeDisplay,
+      times_per_route: timesPerRoute,
+      device,
+    });
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(html);
   } catch (err) {

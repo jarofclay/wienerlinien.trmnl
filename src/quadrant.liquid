@@ -2,20 +2,32 @@
   <div class="vt-board">
     {% if empty_message %}
       <div class="vt-empty">
-        <div class="vt-empty__title">{{ title | default: "Vienna Transit" }}</div>
-        <div class="vt-empty__body">{{ empty_message }}</div>
+        <div class="title title--base lg:title--large">{{ title | default: "Vienna Transit" }}</div>
+        <div class="description description--large lg:description--xlarge">{{ empty_message }}</div>
       </div>
     {% else %}
       {% assign show_stop_sub = false %}
       {% if stop_count > 1 %}{% assign show_stop_sub = true %}{% endif %}
+      {% assign og_cap = 4 %}
+      {% assign x_cap = 7 %}
+      {% if stop_count == 1 or times_per_route >= 3 or time_display == "clock_and_min" %}
+        {% assign og_cap = 3 %}
+        {% assign x_cap = 6 %}
+      {% endif %}
       {% if stop_count == 1 %}
         <div class="vt-station__header">
-          <span class="vt-station__name">{{ stops.first.name }}</span>
-          <span class="vt-station__hint">Real</span>
+          <span class="title title--small lg:title--base vt-station__name">{{ stops.first.name }}</span>
+          <span class="label label--small lg:label--base vt-station__hint">{% if rt_only %}Real{% else %}Times{% endif %}</span>
         </div>
       {% endif %}
-      {% for row in rows limit: 5 %}
-        {% render "route_row", row: row, time_display: time_display, size_class: "vt-row--quad", show_stop: show_stop_sub, max_times: 3, stack_four: false %}
+      {% for row in rows limit: x_cap %}
+        {% if forloop.index > og_cap %}
+          <div class="hidden lg:visible">
+            {% render "route_row", row: row, time_display: time_display, density: "quad", show_stop: show_stop_sub, max_times: 3, stack_times: true %}
+          </div>
+        {% else %}
+          {% render "route_row", row: row, time_display: time_display, density: "quad", show_stop: show_stop_sub, max_times: 3, stack_times: true %}
+        {% endif %}
       {% endfor %}
     {% endif %}
   </div>

@@ -552,8 +552,9 @@ function runInternal(input) {
     }
   }
 
-  // Cap rows gracefully so the serialized TRMNL payload always stays well under 5 KB
-  const MAX_TOTAL_ROWS = 24;
+  // Cap total routes so serialized payload stays comfortably under TRMNL's 5 KB limit,
+  // while keeping enough rows for TRMNL X (landscape & portrait) to show more departures via `hidden lg:visible`.
+  const MAX_TOTAL_ROWS = timesPerRoute >= 4 ? 22 : 26;
   const trimmedRows = rows.slice(0, MAX_TOTAL_ROWS);
   const trimmedStops = [];
   let remaining = MAX_TOTAL_ROWS;
@@ -564,10 +565,10 @@ function runInternal(input) {
     trimmedStops.push({ name: st.name, routes: sliced });
   }
 
-  // Balance stops across left & right Full Screen columns using visual unit budget
-  // (each station header = 1 unit, each route row = 1 unit; stacked 4-time rows use a tighter row cap so nothing clips).
-  // Annotate each stop with `col: "L" | "R"` in-place (avoids duplicating payload bytes!).
-  const MAX_COL_UNITS = timesPerRoute >= 4 ? 9 : 11;
+  // Balance stops across left & right Full Screen columns using visual unit budget.
+  // Allow up to 16 units per column so TRMNL X (lg:) can reveal additional departures
+  // while OG hides overflow cleanly via `<div class="hidden lg:visible">` in the templates.
+  const MAX_COL_UNITS = timesPerRoute >= 4 ? 14 : 16;
   let balancedStops = trimmedStops;
   if (trimmedStops.length >= 2) {
     let leftUnits = 0;
@@ -597,8 +598,8 @@ function runInternal(input) {
       .map(({ name, col, routes }) => ({ name, col, routes }));
   }
 
-  // half_horizontal and quadrant display at most 8 compact rows
-  const compactRows = trimmedRows.slice(0, 8);
+  // Keep up to 12 compact rows so half_horizontal and quadrant can reveal extra departures on TRMNL X
+  const compactRows = trimmedRows.slice(0, 12);
 
   let statusMessage = null;
   if (parsedSourceCount === 0) {

@@ -209,6 +209,26 @@ test('handles empty or unconfigured input gracefully', () => {
   assert.ok(d.empty_message.includes('DIVA'));
 });
 
+test('passes TRMNL Framework 3.4 lint checks (no custom font-size, opacity:1, or orientation media queries)', () => {
+  const srcDir = path.resolve(import.meta.dirname, '../src');
+  const liquidFiles = fs.readdirSync(srcDir).filter((f) => f.endsWith('.liquid'));
+  for (const file of liquidFiles) {
+    const content = fs.readFileSync(path.join(srcDir, file), 'utf8');
+    assert.equal(/\bfont-size\s*:/i.test(content), false, `${file} must not declare custom font-size`);
+    assert.equal(/-webkit-line-clamp\s*:/i.test(content), false, `${file} must not declare -webkit-line-clamp`);
+    assert.equal(/@media[^{]*orientation/i.test(content), false, `${file} must not declare @media orientation`);
+    assert.equal(/\bopacity\s*:\s*1\b/i.test(content), false, `${file} must not include redundant opacity: 1`);
+  }
+  const shared = fs.readFileSync(path.join(srcDir, 'shared.liquid'), 'utf8');
+  assert.ok(shared.includes('lg:title--'), 'shared.liquid should use responsive lg:title-- steps');
+  assert.ok(shared.includes('lg:value--'), 'shared.liquid should use responsive lg:value-- steps');
+  assert.ok(shared.includes('lg:label--'), 'shared.liquid should use responsive lg:label-- steps');
+  const full = fs.readFileSync(path.join(srcDir, 'full.liquid'), 'utf8');
+  assert.ok(full.includes('hidden lg:visible'), 'full.liquid should reveal extra departures on TRMNL X');
+  const settings = fs.readFileSync(path.join(srcDir, 'settings.yml'), 'utf8');
+  assert.ok(settings.includes("'Clock and minutes (14:12 (6′))': clock_and_min"), 'settings.yml should have human-readable time_display labels');
+});
+
 if (!process.exitCode) {
   console.log(`\nAll ${passed} tests passed!`);
 }
