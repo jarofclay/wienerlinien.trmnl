@@ -30,9 +30,10 @@
         <div class="vt-col">
           {% assign left_used = 0 %}
           {% for stop in stops %}
-            {% if stop.col == "L" and left_used < x_col_budget %}
+            {% assign left_min_end = left_used | plus: 2 %}
+            {% if stop.col == "L" and stop.routes.size > 0 and left_min_end <= x_col_budget %}
               {% assign hdr_lg_only = false %}
-              {% if left_used >= og_col_budget %}{% assign hdr_lg_only = true %}{% endif %}
+              {% if left_min_end > og_col_budget %}{% assign hdr_lg_only = true %}{% endif %}
               <div class="vt-station{% if hdr_lg_only %} hidden lg:visible{% endif %}">
                 <div class="vt-station__header">
                   <span class="title title--small lg:title--base vt-station__name">{{ stop.name }}</span>
@@ -58,9 +59,10 @@
         <div class="vt-col">
           {% assign right_used = 0 %}
           {% for stop in stops %}
-            {% if stop.col == "R" and right_used < x_col_budget %}
+            {% assign right_min_end = right_used | plus: 2 %}
+            {% if stop.col == "R" and stop.routes.size > 0 and right_min_end <= x_col_budget %}
               {% assign hdr_lg_only = false %}
-              {% if right_used >= og_col_budget %}{% assign hdr_lg_only = true %}{% endif %}
+              {% if right_min_end > og_col_budget %}{% assign hdr_lg_only = true %}{% endif %}
               <div class="vt-station{% if hdr_lg_only %} hidden lg:visible{% endif %}">
                 <div class="vt-station__header">
                   <span class="title title--small lg:title--base vt-station__name">{{ stop.name }}</span>
@@ -94,6 +96,12 @@
       {% endif %}
       {% assign half = single_stop.routes.size | plus: 1 | divided_by: 2 %}
       {% if half > x_per_col %}{% assign half = x_per_col %}{% endif %}
+      {% assign single_dens = "normal" %}
+      {% if times_per_route >= 3 or time_display == "clock_and_min" %}
+        {% if half <= 6 %}{% assign single_dens = "full_single" %}{% endif %}
+      {% else %}
+        {% if half <= 7 %}{% assign single_dens = "full_single" %}{% endif %}
+      {% endif %}
       <div class="vt-station">
         <div class="vt-station__header">
           <span class="title title--small lg:title--base vt-station__name">{{ single_stop.name }}</span>
@@ -105,10 +113,10 @@
           {% for route in single_stop.routes limit: half %}
             {% if forloop.index > og_per_col %}
               <div class="hidden lg:visible">
-                {% render "route_row", row: route, time_display: time_display, density: "normal", show_stop: false, max_times: 4, stack_times: true %}
+                {% render "route_row", row: route, time_display: time_display, density: single_dens, show_stop: false, max_times: 4, stack_times: true %}
               </div>
             {% else %}
-              {% render "route_row", row: route, time_display: time_display, density: "normal", show_stop: false, max_times: 4, stack_times: true %}
+              {% render "route_row", row: route, time_display: time_display, density: single_dens, show_stop: false, max_times: 4, stack_times: true %}
             {% endif %}
           {% endfor %}
         </div>
@@ -116,10 +124,10 @@
           {% for route in single_stop.routes offset: half limit: x_per_col %}
             {% if forloop.index > og_per_col %}
               <div class="hidden lg:visible">
-                {% render "route_row", row: route, time_display: time_display, density: "normal", show_stop: false, max_times: 4, stack_times: true %}
+                {% render "route_row", row: route, time_display: time_display, density: single_dens, show_stop: false, max_times: 4, stack_times: true %}
               </div>
             {% else %}
-              {% render "route_row", row: route, time_display: time_display, density: "normal", show_stop: false, max_times: 4, stack_times: true %}
+              {% render "route_row", row: route, time_display: time_display, density: single_dens, show_stop: false, max_times: 4, stack_times: true %}
             {% endif %}
           {% endfor %}
         </div>

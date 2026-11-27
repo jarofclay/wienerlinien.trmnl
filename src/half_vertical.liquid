@@ -7,25 +7,39 @@
       </div>
     {% else %}
       {% assign og_budget = 9 %}
-      {% assign x_budget = 17 %}
+      {% assign xl_budget = 14 %}
+      {% assign xp_budget = 17 %}
       {% if times_per_route >= 3 or time_display == "clock_and_min" %}
         {% assign og_budget = 7 %}
-        {% assign x_budget = 13 %}
+        {% assign xl_budget = 10 %}
+        {% assign xp_budget = 13 %}
       {% endif %}
       {% assign used = 0 %}
       {% for stop in stops %}
-        {% if used < x_budget %}
-          {% assign hdr_lg_only = false %}
-          {% if used >= og_budget %}{% assign hdr_lg_only = true %}{% endif %}
-          <div class="vt-station{% if hdr_lg_only %} hidden lg:visible{% endif %}">
+        {% assign min_end = used | plus: 2 %}
+        {% if stop.routes.size > 0 and min_end <= xp_budget %}
+          {% assign hdr_vis = "all" %}
+          {% assign hdr_cls = "" %}
+          {% if min_end > xl_budget %}
+            {% assign hdr_vis = "xp" %}
+            {% assign hdr_cls = " hidden lg:portrait:visible" %}
+          {% elsif min_end > og_budget %}
+            {% assign hdr_vis = "xl" %}
+            {% assign hdr_cls = " hidden lg:visible" %}
+          {% endif %}
+          <div class="vt-station{{ hdr_cls }}">
             <div class="vt-station__header">
               <span class="title title--small lg:title--base vt-station__name">{{ stop.name }}</span>
               <span class="label label--small lg:label--base vt-station__hint">{% if rt_only %}Real{% else %}Times{% endif %}</span>
             </div>
             {% assign used = used | plus: 1 %}
             {% for route in stop.routes %}
-              {% if used < x_budget %}
-                {% if used >= og_budget and hdr_lg_only == false %}
+              {% if used < xp_budget %}
+                {% if used >= xl_budget and hdr_vis != "xp" %}
+                  <div class="hidden lg:portrait:visible">
+                    {% render "route_row", row: route, time_display: time_display, density: "compact", show_stop: false, max_times: 4, stack_times: true %}
+                  </div>
+                {% elsif used >= og_budget and hdr_vis == "all" %}
                   <div class="hidden lg:visible">
                     {% render "route_row", row: route, time_display: time_display, density: "compact", show_stop: false, max_times: 4, stack_times: true %}
                   </div>

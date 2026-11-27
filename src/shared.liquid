@@ -16,7 +16,7 @@
   }
 
   .screen--lg .vt-cols {
-    column-gap: 28px;
+    column-gap: 20px;
     row-gap: 16px;
   }
 
@@ -32,7 +32,7 @@
   }
 
   .screen--lg:not(.screen--portrait) .vt-cols--split .vt-col:nth-child(2) {
-    padding-left: 24px;
+    padding-left: 18px;
   }
 
   .vt-station {
@@ -118,13 +118,19 @@
   .vt-row--quad {
     grid-template-columns: 18px 38px minmax(0, 1fr) auto;
     column-gap: 5px;
-    padding: 3px 0;
+    padding: 2px 0;
   }
 
   .screen--lg .vt-row--quad {
     grid-template-columns: 24px 50px minmax(0, 1fr) auto;
     column-gap: 8px;
-    padding: 6px 0;
+    padding: 4px 0;
+  }
+
+  .screen--lg:not(.screen--portrait) .vt-row--full-single {
+    grid-template-columns: 28px 68px minmax(0, 1fr) auto;
+    column-gap: 8px;
+    padding: 13px 0;
   }
 
   .vt-row--stacked {
@@ -135,6 +141,11 @@
   .screen--lg .vt-row--stacked {
     grid-template-columns: 28px 58px minmax(0, 1fr);
     row-gap: 4px;
+  }
+
+  .screen--lg:not(.screen--portrait) .vt-row--full-single.vt-row--stacked {
+    grid-template-columns: 28px 68px minmax(0, 1fr);
+    row-gap: 5px;
   }
 
   .vt-row--compact.vt-row--stacked {
@@ -278,6 +289,10 @@
     gap: 8px;
   }
 
+  .screen--lg:not(.screen--portrait) .vt-row--full-single .vt-times {
+    gap: 6px;
+  }
+
   .vt-t {
     display: inline-flex;
     align-items: baseline;
@@ -367,6 +382,8 @@
       {% if primary %}
         {% if density == "large" %}
           {% assign t_cls = "value value--xsmall lg:value--small value--tnums" %}
+        {% elsif density == "full_single" %}
+          {% assign t_cls = "value value--xxsmall lg:value--xsmall lg:landscape:value--small lg:landscape:text--bold value--tnums" %}
         {% elsif density == "quad" %}
           {% assign t_cls = "label label--base lg:label--large value--tnums" %}
         {% else %}
@@ -375,6 +392,8 @@
       {% else %}
         {% if density == "large" %}
           {% assign t_cls = "label label--base lg:label--large value--tnums" %}
+        {% elsif density == "full_single" %}
+          {% assign t_cls = "label label--small lg:label--base lg:landscape:label--large value--tnums" %}
         {% else %}
           {% assign t_cls = "label label--small lg:label--base value--tnums" %}
         {% endif %}
@@ -416,6 +435,10 @@
     {% assign row_cls = "vt-row vt-row--large" %}
     {% assign line_size = "label label--base lg:label--large" %}
     {% assign dest_cls = "title title--base lg:title--large vt-dest__to" %}
+  {% elsif dens == "full_single" %}
+    {% assign row_cls = "vt-row vt-row--full-single" %}
+    {% assign line_size = "label label--small lg:label--base lg:landscape:title--large" %}
+    {% assign dest_cls = "title title--small lg:title--base lg:landscape:title--large vt-dest__to" %}
   {% elsif dens == "compact" %}
     {% assign row_cls = "vt-row vt-row--compact" %}
     {% assign line_size = "label label--small lg:label--base" %}
@@ -449,7 +472,7 @@
     </div>
     <div class="vt-times{% if should_stack %} vt-times--ownline{% endif %}">
       {% for dep in row.ts limit: lim %}
-        {% if forloop.index > 1 %}<span class="label label--small lg:label--base">&middot;</span>{% endif %}
+        {% if forloop.index > 1 %}<span class="label label--small lg:label--base{% if dens == "full_single" %} lg:landscape:label--large{% endif %}">&middot;</span>{% endif %}
         {% render "dep_time", dep: dep, primary: forloop.first, time_display: time_display, density: dens %}
       {% endfor %}
     </div>

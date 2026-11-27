@@ -9,10 +9,12 @@
       {% assign show_stop_sub = false %}
       {% if stop_count > 1 %}{% assign show_stop_sub = true %}{% endif %}
       {% assign og_cap = 4 %}
-      {% assign x_cap = 7 %}
-      {% if stop_count == 1 or times_per_route >= 3 or time_display == "clock_and_min" %}
+      {% assign x_cap = 5 %}
+      {% if stop_count == 1 %}
         {% assign og_cap = 3 %}
         {% assign x_cap = 6 %}
+      {% elsif times_per_route >= 3 or time_display == "clock_and_min" %}
+        {% assign og_cap = 3 %}
       {% endif %}
       {% if stop_count == 1 %}
         <div class="vt-station__header">
@@ -21,7 +23,11 @@
         </div>
       {% endif %}
       {% for row in rows limit: x_cap %}
-        {% if forloop.index > og_cap %}
+        {% if forloop.index > 4 %}
+          <div class="hidden lg:portrait:visible">
+            {% render "route_row", row: row, time_display: time_display, density: "quad", show_stop: show_stop_sub, max_times: 3, stack_times: true %}
+          </div>
+        {% elsif forloop.index > og_cap %}
           <div class="hidden lg:visible">
             {% render "route_row", row: row, time_display: time_display, density: "quad", show_stop: show_stop_sub, max_times: 3, stack_times: true %}
           </div>

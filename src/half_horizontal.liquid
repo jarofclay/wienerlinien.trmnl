@@ -8,22 +8,16 @@
     {% else %}
       {% assign show_stop_sub = false %}
       {% if stop_count > 1 %}{% assign show_stop_sub = true %}{% endif %}
-      {% assign og_per_col = 4 %}
-      {% assign x_per_col = 6 %}
-      {% if stop_count == 1 or times_per_route >= 3 or time_display == "clock_and_min" %}
-        {% assign og_per_col = 3 %}
-        {% assign x_per_col = 5 %}
+      {% assign og_per_col = 3 %}
+      {% assign xl_per_col = 4 %}
+      {% assign xp_per_col = 5 %}
+      {% if times_per_route >= 3 or time_display == "clock_and_min" %}
+        {% assign og_per_col = 2 %}
+        {% assign xl_per_col = 3 %}
+        {% assign xp_per_col = 5 %}
       {% endif %}
-      {% if stop_count == 1 %}
-        {% if times_per_route >= 3 or time_display == "clock_and_min" %}
-          {% assign og_per_col = 2 %}
-        {% endif %}
-      {% endif %}
-      {% assign og_two = og_per_col | times: 2 %}
-      {% assign col_split = x_per_col %}
-      {% if rows.size <= og_two %}
-        {% assign col_split = rows.size | plus: 1 | divided_by: 2 %}
-      {% endif %}
+      {% assign col_split = rows.size | plus: 1 | divided_by: 2 %}
+      {% if col_split > xp_per_col %}{% assign col_split = xp_per_col %}{% endif %}
       {% if stop_count == 1 %}
         <div class="vt-station">
           <div class="vt-station__header">
@@ -35,7 +29,11 @@
       <div class="grid grid--cols-2 vt-cols vt-cols--split">
         <div class="vt-col">
           {% for row in rows limit: col_split %}
-            {% if forloop.index > og_per_col %}
+            {% if forloop.index > xl_per_col %}
+              <div class="hidden lg:portrait:visible">
+                {% render "route_row", row: row, time_display: time_display, density: "compact", show_stop: show_stop_sub, max_times: 4, stack_times: true %}
+              </div>
+            {% elsif forloop.index > og_per_col %}
               <div class="hidden lg:visible">
                 {% render "route_row", row: row, time_display: time_display, density: "compact", show_stop: show_stop_sub, max_times: 4, stack_times: true %}
               </div>
@@ -46,7 +44,11 @@
         </div>
         <div class="vt-col">
           {% for row in rows offset: col_split limit: col_split %}
-            {% if forloop.index > og_per_col %}
+            {% if forloop.index > xl_per_col %}
+              <div class="hidden lg:portrait:visible">
+                {% render "route_row", row: row, time_display: time_display, density: "compact", show_stop: show_stop_sub, max_times: 4, stack_times: true %}
+              </div>
+            {% elsif forloop.index > og_per_col %}
               <div class="hidden lg:visible">
                 {% render "route_row", row: row, time_display: time_display, density: "compact", show_stop: show_stop_sub, max_times: 4, stack_times: true %}
               </div>

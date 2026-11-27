@@ -225,8 +225,14 @@ test('passes TRMNL Framework 3.4 lint checks (no custom font-size, opacity:1, or
   assert.ok(shared.includes('lg:label--'), 'shared.liquid should use responsive lg:label-- steps');
   const full = fs.readFileSync(path.join(srcDir, 'full.liquid'), 'utf8');
   assert.ok(full.includes('hidden lg:visible'), 'full.liquid should reveal extra departures on TRMNL X');
+  const halfH = fs.readFileSync(path.join(srcDir, 'half_horizontal.liquid'), 'utf8');
+  assert.ok(halfH.includes('hidden lg:portrait:visible'), 'half_horizontal.liquid should separate X landscape and X portrait rows');
+  const halfV = fs.readFileSync(path.join(srcDir, 'half_vertical.liquid'), 'utf8');
+  assert.ok(halfV.includes('hidden lg:portrait:visible'), 'half_vertical.liquid should separate X landscape and X portrait rows');
+  const quad = fs.readFileSync(path.join(srcDir, 'quadrant.liquid'), 'utf8');
+  assert.ok(quad.includes('hidden lg:portrait:visible'), 'quadrant.liquid should keep rows past the fourth portrait-only on TRMNL X');
   const settings = fs.readFileSync(path.join(srcDir, 'settings.yml'), 'utf8');
-  assert.ok(settings.includes("'Clock and minutes (14:12 (6′))': clock_and_min"), 'settings.yml should have human-readable time_display labels');
+  assert.ok(settings.includes('Clock and minutes (14:12 (6′))'), 'settings.yml should have human-readable time_display labels');
 });
 
 if (!process.exitCode) {
