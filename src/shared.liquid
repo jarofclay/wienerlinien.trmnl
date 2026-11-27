@@ -268,7 +268,8 @@
     text-overflow: ellipsis;
   }
 
-  .screen--lg .vt-dest__to {
+  .screen--lg .vt-dest__to,
+  .screen--lg .vt-dest__stop {
     white-space: normal;
   }
 
@@ -471,7 +472,7 @@
     <div class="vt-dest">
       <span class="{{ dest_cls }}" data-clamp="1" data-clamp-lg="2">{{ row.to }}</span>
       {% if show_stop and row.stop %}
-        <span class="description description--base lg:description--large vt-dest__stop" data-clamp="1">{{ row.stop }}</span>
+        <span class="description description--base lg:description--large vt-dest__stop" data-clamp="1" data-clamp-lg="2">{{ row.stop }}</span>
       {% endif %}
     </div>
     <div class="vt-times{% if should_stack %} vt-times--ownline{% endif %}">
