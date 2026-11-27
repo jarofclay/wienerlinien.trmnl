@@ -268,6 +268,10 @@
     text-overflow: ellipsis;
   }
 
+  .screen--lg .vt-dest__to {
+    white-space: normal;
+  }
+
   .vt-dest__stop {
     display: block;
     max-width: 100%;
@@ -465,7 +469,7 @@
     </span>
     <span class="{{ line_size }} {{ badge_variant }} vt-line vt-line--{{ row.mode }}">{{ row.line }}</span>
     <div class="vt-dest">
-      <span class="{{ dest_cls }}" data-clamp="1">{{ row.to }}</span>
+      <span class="{{ dest_cls }}" data-clamp="1" data-clamp-lg="2">{{ row.to }}</span>
       {% if show_stop and row.stop %}
         <span class="description description--base lg:description--large vt-dest__stop" data-clamp="1">{{ row.stop }}</span>
       {% endif %}

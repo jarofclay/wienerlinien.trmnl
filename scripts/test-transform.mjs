@@ -223,6 +223,7 @@ test('passes TRMNL Framework 3.4 lint checks (no custom font-size, opacity:1, or
   assert.ok(shared.includes('lg:title--'), 'shared.liquid should use responsive lg:title-- steps');
   assert.ok(shared.includes('lg:value--'), 'shared.liquid should use responsive lg:value-- steps');
   assert.ok(shared.includes('lg:label--'), 'shared.liquid should use responsive lg:label-- steps');
+  assert.ok(shared.includes('data-clamp="1" data-clamp-lg="2"'), 'shared.liquid should allow 2-line destination clamping on TRMNL X');
   const full = fs.readFileSync(path.join(srcDir, 'full.liquid'), 'utf8');
   assert.ok(full.includes('hidden lg:visible'), 'full.liquid should reveal extra departures on TRMNL X');
   const halfH = fs.readFileSync(path.join(srcDir, 'half_horizontal.liquid'), 'utf8');
